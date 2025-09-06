@@ -6,7 +6,7 @@ import { Link } from "react-scroll";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 
-const routes = [
+const routesMain = [
     {
         name: "home",
         id: "home"
@@ -29,7 +29,7 @@ const routes = [
     }
 ]
 
-export default function Header() {
+export default function Header({ type }: { type: "main" | "dn42" }) {
     const [showBg, setShowBg] = useState(false);
 
     useEffect(() => {
@@ -56,11 +56,20 @@ export default function Header() {
                     </IconButton>
                 </Link>
                 <div className={cls.Nav}>
-                    {routes.map((route, index) => (
+                    {type === "main" ? routesMain.map((route, index) => (
                         <Link key={index} activeClass="rt-variant-surface" className={clsx("rt-reset rt-BaseButton rt-r-size-2 rt-variant-ghost rt-Button", cls.NavBtn)} to={route.id} spy={true} smooth={true} duration={500} >
                             {route.name}
                         </Link>
+                    )) : routesMain.map((route, index) => (
+                        <a key={index} className={clsx("rt-reset rt-BaseButton rt-r-size-2 rt-variant-ghost rt-Button", cls.NavBtn)} href={`/#${route.id}`}>
+                            {route.name}
+                        </a>
                     ))}
+                    {type === "dn42" ? (
+                        <span className={clsx("rt-reset rt-BaseButton rt-r-size-2 rt-variant-surface rt-Button", cls.NavBtn)}>dn42</span>
+                    ) : <a className={clsx("rt-reset rt-BaseButton rt-r-size-2 rt-variant-ghost rt-Button", cls.NavBtn)} href={"/dn42"}>
+                        dn42
+                    </a>}
                     <a className={clsx("rt-reset rt-BaseButton rt-r-size-2 rt-variant-ghost rt-Button", cls.NavBtn)} href={"https://blog.badaimweeb.me/"} target="_blank">
                         blog
                     </a>
@@ -72,11 +81,17 @@ export default function Header() {
                         </IconButton>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Content>
-                        {routes.map((route, index) => (
+                        {type === "main" ? routesMain.map((route, index) => (
                             <Link key={index} to={route.id} spy={true} smooth={true} duration={500} >
                                 <DropdownMenu.Item>{route.name}</DropdownMenu.Item>
                             </Link>
+                        )) : routesMain.map((route, index) => (
+                            <DropdownMenu.Item key={index}><a href={`/#${route.id}`} style={{ color: "inherit", textDecoration: "none" }}>{route.name}</a></DropdownMenu.Item>
                         ))}
+                        {type === "dn42" ? (
+                            <DropdownMenu.Item>dn42</DropdownMenu.Item>
+                        ) : <DropdownMenu.Item><a href={"/dn42"} style={{ color: "inherit", textDecoration: "none" }}>dn42</a></DropdownMenu.Item>}
+                        <DropdownMenu.Item><a href={"https://blog.badaimweeb.me/"} target="_blank" style={{ color: "inherit", textDecoration: "none" }}>blog</a></DropdownMenu.Item>
                     </DropdownMenu.Content>
                 </DropdownMenu.Root>
             </div>

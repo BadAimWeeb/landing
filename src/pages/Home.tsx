@@ -1,7 +1,7 @@
 import { ParallaxBanner } from "react-scroll-parallax";
 import cls from "./Home.module.scss";
 import Huohuo from "./../assets/images/huohuo.svg";
-import { Element, Link as LinkScroll } from 'react-scroll'
+import { Element } from 'react-scroll'
 import { Badge, Button, Card, Grid, Heading, IconButton, Link, Text, Tooltip } from "@radix-ui/themes";
 import { PiCodeDuotone, PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiMagicWandDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone } from "react-icons/pi";
 import type { accentColors } from "@radix-ui/themes/props";
@@ -44,7 +44,7 @@ const ListSocial = [
     {
         name: "Facebook",
         icon: <PiFacebookLogoDuotone size={25} />,
-        url: "https://github.com/BadAimWeeb"
+        url: "https://www.facebook.com/badaimweeb"
     },
 ];
 
@@ -235,7 +235,7 @@ export default function PageHome() {
                     <div className={cls.Content}>
                         <Text size="2" color="gray">
                             i'm a 20-year-old guy who likes to do programming stuff, gaming, and anime. originally from vietnam, but currently living in usa.<br />
-                            i'm operating an AS in <Link href="https://dn42.dev" target="_blank">dn42</Link> under AS4242423797 (interested in peering? <LinkScroll to="contact-me"><Link href="#contact-me">contact me!</Link></LinkScroll>).<br /><br />
+                            i'm operating an AS in <Link href="https://dn42.dev" target="_blank">dn42</Link> under AS4242423797 (interested in peering? <Link href="/dn42">see the dn42 page!</Link>).<br /><br />
                             (what should i put here...?)
                         </Text>
                     </div>

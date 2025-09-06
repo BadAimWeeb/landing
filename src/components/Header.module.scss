@@ -41,7 +41,7 @@
         .MbMenu {
             display: none;
 
-            @media only screen and (max-width: 512px) {
+            @media only screen and (max-width: 599px) {
                 display: flex;
             }
         }
@@ -58,7 +58,7 @@
                 padding-left: var(--space-3);
                 padding-right: var(--space-3);
 
-                @media only screen and (max-width: 512px) {
+                @media only screen and (max-width: 599px) {
                     display: none;
                 }
             }

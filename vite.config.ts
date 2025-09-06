@@ -20,6 +20,12 @@ export default defineConfig({
         comments: false
       }
     },
-    assetsDir: "landing-assets"
+    assetsDir: "landing-assets",
+    rollupOptions: {
+      input: {
+        main: './index.html',
+        dn42: './dn42.html'
+      }
+    }
   }
 })

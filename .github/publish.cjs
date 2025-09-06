@@ -31,9 +31,7 @@ function execPromise(cmd, cwd) {
     await fs.rm(path.join(tmp, "crepo0", "docs", "landing-assets"), { recursive: true }).catch(() => { });
     await fs.cp(path.join(cwd, "dist", "landing-assets"), path.join(tmp, "crepo0", "docs", "landing-assets"), { recursive: true });
     await fs.cp(path.join(cwd, "dist", "index.html"), path.join(tmp, "crepo0", "docs", "index.html"));
-
-    // Handle any pages in github pages (use 404)
-    await fs.cp(path.join(tmp, "crepo0", "docs", "index.html"), path.join(tmp, "crepo0", "docs", "404.html"));
+    await fs.cp(path.join(cwd, "dist", "dn42.html"), path.join(tmp, "crepo0", "docs", "dn42.html"));
 
     let commit = (await execPromise("git rev-parse --short HEAD", cwd))[0].replace(/\r/g, "").replace(/\n/g, "");
     let version = require("../package.json").version;

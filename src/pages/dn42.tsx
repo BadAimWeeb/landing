@@ -335,14 +335,14 @@ export default function PageDN42() {
                 </div>
                 <div className={cls.BodyNodeList}>
                     <div className={cls.Content}>
-                        <MapContainer center={[20, 0]} zoom={1.5} id="dn42-overview-map" className={cls.MapOverview}>
+                        <MapContainer worldCopyJump center={[20, 0]} zoom={1.5} id="dn42-overview-map" className={cls.MapOverview}>
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
                             <MarkerClusterGroup zoomToBoundsOnClick maxClusterRadius={15}>
-                                {NodeTables.map((node, index) => (
-                                    <Marker icon={MarkerIconLL} position={[node.lat + (Math.random() * 0.005) - 0.0025, node.lon + (Math.random() * 0.005) - 0.0025]} key={index}>
+                                {NodeTables.map((node, index) => new Array(5).fill(0).map((_, i) => (
+                                    <Marker icon={MarkerIconLL} position={[node.lat, node.lon + ((+i - 2) * 360)]} key={index + "-" + i}>
                                         <MapPopup interactive>
                                             {node.flag} <strong>{node.rc}</strong> ({node.sc})<br /><br />
                                             Endpoint: <code>{node.endpoint}</code><br />
@@ -351,7 +351,7 @@ export default function PageDN42() {
                                             {node.notes && (<><br />Notes: {node.notes}</>)}
                                         </MapPopup>
                                     </Marker>
-                                ))}
+                                )))}
                             </MarkerClusterGroup>
                         </MapContainer>
                         <br />

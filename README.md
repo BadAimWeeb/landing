@@ -1,5 +1,8 @@
-# hello
-nothin'
+# Landing page
+
+what are you looking at?
 
 # License
-[CC BY-NC-ND 4.0 DEED](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+Forked from [michioxd's original version](https://github.com/michioxd/michioxd.github.io/tree/v4) with permission.

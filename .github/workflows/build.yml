@@ -10,22 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [21.x]
-
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Use Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm i -g pnpm
-      - run: pnpm i
-      - run: pnpm run build && echo "michioxd.ch" > ./dist/CNAME
-      - run: cp ./dist/index.html ./dist/404.html
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          bun-version: latest
+      - run: bun install
+      - run: bun build
+      
+      - name: Push result to main repository
+        run: bun ./.github/publish.cjs
+        env:
+          MAIN_PAT: ${{ secrets.MAIN_PAT }}
+

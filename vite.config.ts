@@ -19,6 +19,7 @@ export default defineConfig({
       format: {
         comments: false
       }
-    }
+    },
+    assetsDir: "landing-assets"
   }
 })

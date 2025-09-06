@@ -17,7 +17,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun build
+      - run: bun run build
       
       - name: Push result to main repository
         run: bun ./.github/publish.cjs

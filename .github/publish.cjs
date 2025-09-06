@@ -28,7 +28,7 @@ function execPromise(cmd, cwd) {
 
     await execPromise(`git clone https://BadAimWeeb:${pat}@github.com/BadAimWeeb/BadAimWeeb.git ${path.join(tmp, "crepo0")}`);
 
-    await fs.rm(path.join(tmp, "crepo0", "docs", "landing-assets"), { recursive: true });
+    await fs.rm(path.join(tmp, "crepo0", "docs", "landing-assets"), { recursive: true }).catch(() => { });
     await fs.cp(path.join(cwd, "dist", "landing-assets"), path.join(tmp, "crepo0", "docs", "landing-assets"), { recursive: true });
     await fs.cp(path.join(cwd, "dist", "index.html"), path.join(tmp, "crepo0", "docs", "index.html"));
 

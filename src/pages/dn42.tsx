@@ -176,6 +176,17 @@ const NodeTables = [
         notes: null
     },
     {
+        sc: "C16",
+        rc: "jp-hnd1",
+        flag: "🇯🇵",
+        lat: 35.553333,
+        lon: 139.781111,
+        endpoint: "jp-hnd1.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: null
+    },
+    {
         sc: "E03",
         rc: "vn-sgn2",
         flag: "🇻🇳",

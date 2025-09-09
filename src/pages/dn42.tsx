@@ -187,6 +187,17 @@ const NodeTables = [
         notes: null
     },
     {
+        sc: "C17",
+        rc: "ao-nbj1",
+        flag: "🇦🇴",
+        lat: -9.046778,
+        lon: 13.507194,
+        endpoint: "ao-nbj1.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.No,
+        notes: null
+    },
+    {
         sc: "E03",
         rc: "vn-sgn2",
         flag: "🇻🇳",

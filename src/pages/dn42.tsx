@@ -220,6 +220,17 @@ const NodeTables = [
         notes: "Unmetered connection @ 10Gbps"
     },
     {
+        sc: "C20",
+        rc: "us-jfk1",
+        flag: "🇺🇸",
+        lat: 40.639722,
+        lon: -73.778889,
+        endpoint: "us-jfk1.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: "Unmetered connection @ 10Gbps"
+    },
+    {
         sc: "E03",
         rc: "vn-sgn2",
         flag: "🇻🇳",

@@ -357,6 +357,26 @@ const Services = [
     }
 ];
 
+function getCoords(nodeName: string, topology: { rgCode: Record<string, string>; geo: Record<string, [number, number]>; }): [number, number] | null {
+    const node = NodeTables.find(x => x.sc === nodeName);
+    if (node) return [node.lat, node.lon];
+
+    // Infer from airport code
+    const rg = topology.rgCode[nodeName];
+    const airport = rg.slice(3, 6).toLowerCase();
+    if (airport in topology.geo) {
+        return topology.geo[airport];
+    }
+
+    return null;
+}
+
+function mirrorNearest(startLon: number, targetLon: number): number {
+    let distMirrors = [Math.abs(startLon - (targetLon - 360)), Math.abs(startLon - targetLon), Math.abs(startLon - (targetLon + 360))];
+
+    return (distMirrors.indexOf(Math.min(...distMirrors)) - 1) * 360;
+}
+
 export default function PageDN42() {
     const [openTable, setOpenTable] = useState(false);
     const MarkerIconLL = useMemo(() => new Icon({
@@ -383,82 +403,52 @@ export default function PageDN42() {
         if (!topology || !toggleTopology || !currentNodeSelected) return [];
 
         const paths: Record<string, [[number, number], [number, number], string]> = {};
-        const selectedNode = NodeTables.find(x => x.sc === currentNodeSelected)!;
+        const selectedNodeCoords = getCoords(currentNodeSelected, topology);
+        if (!selectedNodeCoords) return [];
+
         for (let [peer, nextHopOrLatency] of topology.topology[currentNodeSelected] || []) {
-            function recursivelyTraversePath(target: string, current: string, past: string[] = []) {
+            const topologyNonNull = topology;
+            function recursivelyTraversePath(target: string, current: string, mirror = 0, past: string[] = []) {
                 if (past.includes(current)) return; // avoid circular path
 
-                let t = topology?.topology[current]?.find(x => x[0] === target);
+                const t = topologyNonNull.topology[current]?.find(x => x[0] === target);
                 if (t) {
-                    let [_, latency] = t;
-                    switch (typeof latency) {
+                    const latencyOrNextHop = t[1];
+                    const currentNodeCoords = getCoords(current, topologyNonNull);
+                    if (!currentNodeCoords) return;
+                    currentNodeCoords[1] += mirror;
+
+                    switch (typeof latencyOrNextHop) {
                         case "number": {
-                            let targetNode = NodeTables.find(x => x.sc === target);
-                            let currentNode = NodeTables.find(x => x.sc === current);
+                            const latency = latencyOrNextHop;
 
-                            let targetNodeCoords: [number, number] | null = targetNode ? [targetNode.lat, targetNode.lon] : null;
-                            let currentNodeCoords: [number, number] | null = currentNode ? [currentNode.lat, currentNode.lon] : null;
+                            const targetNodeCoords = getCoords(target, topologyNonNull);
 
-                            // Infer from airport code if node not found
-                            if (!targetNodeCoords) {
-                                const rg = topology?.rgCode[target];
-                                const airport = rg?.slice(3, 6).toLowerCase();
+                            if (targetNodeCoords) {
+                                targetNodeCoords[1] += mirror;
 
-                                if ((airport ?? "") in (topology?.geo ?? {})) {
-                                    // @ts-ignore
-                                    targetNodeCoords = topology?.geo[airport];
-                                }
+                                const furtherMirrorShift = mirrorNearest(currentNodeCoords[1], targetNodeCoords[1]);
+
+                                paths[current + "-" + target] = [currentNodeCoords, [targetNodeCoords[0], targetNodeCoords[1] + furtherMirrorShift], Math.ceil(latency) + "ms"];
                             }
-
-                            if (!currentNodeCoords) {
-                                const rg = topology?.rgCode[current];
-                                const airport = rg?.slice(3, 6).toLowerCase();
-
-                                if ((airport ?? "") in (topology?.geo ?? {})) {
-                                    // @ts-ignore
-                                    currentNodeCoords = topology?.geo[airport];
-                                }
-                            }
-
-                            if (currentNodeCoords && targetNodeCoords) {
-                                paths[current + "-" + target] = [currentNodeCoords, targetNodeCoords, Math.ceil(latency) + "ms"];
-                            }
-                            break;
+                            
+                            return;
                         }
                         case "string": {
-                            // draw a line to next hop
-                            let targetNode = NodeTables.find(x => x.sc === latency);
-                            let currentNode = NodeTables.find(x => x.sc === current);
+                            const nextHop = latencyOrNextHop;
 
-                            let targetNodeCoords: [number, number] | null = targetNode ? [targetNode.lat, targetNode.lon] : null;
-                            let currentNodeCoords: [number, number] | null = currentNode ? [currentNode.lat, currentNode.lon] : null;
+                            const nextHopLatency = topologyNonNull.topology[current]?.find(x => x[0] === nextHop)?.[1] as number;
+                            const nextHopCoords = getCoords(nextHop, topologyNonNull);
+                            if (!nextHopCoords) return;
 
-                            // Infer from airport code if node not found
-                            if (!targetNodeCoords) {
-                                const rg = topology?.rgCode[latency];
-                                const airport = rg?.slice(3, 6).toLowerCase();
+                            nextHopCoords[1] += mirror;
 
-                                if ((airport ?? "") in (topology?.geo ?? {})) {
-                                    // @ts-ignore
-                                    targetNodeCoords = topology?.geo[airport];
-                                }
-                            }
+                            const furtherMirrorShift = mirrorNearest(currentNodeCoords[1], nextHopCoords[1]);
+                            nextHopCoords[1] += furtherMirrorShift;
 
-                            if (!currentNodeCoords) {
-                                const rg = topology?.rgCode[current];
-                                const airport = rg?.slice(3, 6).toLowerCase();
+                            paths[current + "-" + nextHop] = [currentNodeCoords, nextHopCoords, Math.ceil(nextHopLatency) + "ms"];
 
-                                if ((airport ?? "") in (topology?.geo ?? {})) {
-                                    // @ts-ignore
-                                    currentNodeCoords = topology?.geo[airport];
-                                }
-                            }
-
-                            if (currentNodeCoords && targetNodeCoords) {
-                                paths[current + "-" + latency] = [currentNodeCoords, targetNodeCoords, latency];
-                            }
-
-                            recursivelyTraversePath(target, latency, past.concat(current));
+                            recursivelyTraversePath(target, nextHop, mirror + furtherMirrorShift, past.concat(current));
                             break;
                         }
                     }
@@ -466,24 +456,22 @@ export default function PageDN42() {
             }
 
             switch (typeof nextHopOrLatency) {
-                case "number":
-                    let node = NodeTables.find(x => x.sc === peer);
-                    if (node) {
-                        paths[peer] = [[selectedNode.lat, selectedNode.lon], [node.lat, node.lon], Math.ceil(nextHopOrLatency) + "ms"];
-                    } else {
-                        // Infer from airport code
-                        const rg = topology.rgCode[peer];
-                        const airport = rg.slice(3, 6).toLowerCase();
+                case "number": {
+                    const targetNodeCoords = getCoords(peer, topology);
+                    if (!targetNodeCoords) break;
 
-                        if (airport in (topology?.geo ?? {})) {
-                            // @ts-ignore
-                            const [lat, lon] = topology?.geo[airport];
-                            paths[peer] = [[selectedNode.lat, selectedNode.lon], [lat, lon], Math.ceil(nextHopOrLatency) + "ms"];
-                        }
-                    }
+                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], targetNodeCoords[1]);
+                    paths[peer] = [selectedNodeCoords, [targetNodeCoords[0], targetNodeCoords[1] + mirrorOffset], Math.ceil(nextHopOrLatency) + "ms"];
                     break;
-                case "string":
-                    recursivelyTraversePath(peer, nextHopOrLatency, [currentNodeSelected]);
+                }
+                case "string": {
+                    const nextHopCoords = getCoords(peer, topology);
+                    if (!nextHopCoords) break;
+
+                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], nextHopCoords[1]);
+                    recursivelyTraversePath(peer, nextHopOrLatency, mirrorOffset, [currentNodeSelected]);
+                    break;
+                }
             }
         }
 
@@ -494,52 +482,44 @@ export default function PageDN42() {
         if (!topology || !toggleTopologyReverse || !currentNodeSelected) return [];
 
         const paths: Record<string, [[number, number], [number, number], string]> = {};
-        const selectedNode = NodeTables.find(x => x.sc === currentNodeSelected)!;
+        const selectedNodeCoords = getCoords(currentNodeSelected, topology);
+        if (!selectedNodeCoords) return [];
+
         for (let revNode in topology.topology) {
             if (revNode === currentNodeSelected) continue;
 
-            let revNodeData = NodeTables.find(x => x.sc === revNode);
-            let revNodeCoords: [number, number] | null = revNodeData ? [revNodeData.lat, revNodeData.lon] : null;
-            if (!revNodeCoords) {
-                // Airport approximation
-                const rg = topology?.rgCode[revNode];
-                const airport = rg?.slice(3, 6).toLowerCase();
-
-                if ((airport ?? "") in (topology?.geo ?? {})) {
-                    // @ts-ignore
-                    revNodeCoords = topology?.geo[airport];
-                } else {
-                    continue;
-                }
-            }
-
-            let [, nextHopOrLatency] = topology.topology[revNode].find(x => x[0] === currentNodeSelected) || [];
+            const revNodeCoords = getCoords(revNode, topology);
+            if (!revNodeCoords) continue;
+            
+            const nextHopOrLatency = topology.topology[revNode].find(x => x[0] === currentNodeSelected)?.[1];
             if (!nextHopOrLatency) continue;
 
             switch (typeof nextHopOrLatency) {
                 case "number": {
-                    paths[revNode] = [revNodeCoords, [selectedNode.lat, selectedNode.lon], Math.ceil(nextHopOrLatency) + "ms"];
+                    const latency = nextHopOrLatency;
+
+                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], revNodeCoords[1]);
+                    revNodeCoords[1] += mirrorOffset;
+
+                    paths[revNode] = [revNodeCoords, selectedNodeCoords, Math.ceil(latency) + "ms"];
                     break;
                 }
 
                 case "string": {
                     // draw a line to next hop only. since we know every node will eventually lead to currentNodeSelected
                     // we don't need to recursively traverse the path
-                    let targetNode = NodeTables.find(x => x.sc === nextHopOrLatency);
-                    let targetNodeLatency = topology.topology[revNode]?.find(x => x[0] === nextHopOrLatency)?.[1];
-                    if (targetNode) {
-                        paths[revNode + "-" + nextHopOrLatency] = [revNodeCoords, [targetNode.lat, targetNode.lon], Math.ceil(targetNodeLatency as number) + "ms"];
-                    } else {
-                        // Infer from airport code if node not found
-                        const rg = topology?.rgCode[nextHopOrLatency];
-                        const airport = rg?.slice(3, 6).toLowerCase();
-                        if ((airport ?? "") in (topology?.geo ?? {})) {
-                            // @ts-ignore
-                            const [lat, lon] = topology?.geo[airport];
-                            let targetNodeLatency = topology.topology[revNode]?.find(x => x[0] === nextHopOrLatency)?.[1];
-                            paths[revNode + "-" + nextHopOrLatency] = [revNodeCoords, [lat, lon], Math.ceil(targetNodeLatency as number) + "ms"];
-                        }
-                    }
+                    const nextHop = nextHopOrLatency;
+                    const nextHopCoords = getCoords(nextHop, topology);
+                    if (!nextHopCoords) break;
+
+                    const nextHopLatency = topology.topology[revNode]?.find(x => x[0] === nextHopOrLatency)?.[1];
+                    if (typeof nextHopLatency !== "number") break;
+
+                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], nextHopCoords[1]);
+                    nextHopCoords[1] += mirrorOffset;
+
+                    paths[revNode] = [nextHopCoords, selectedNodeCoords, Math.ceil(nextHopLatency) + "ms"];
+
                     break;
                 }
             }
@@ -669,18 +649,24 @@ export default function PageDN42() {
                             </MarkerClusterGroup>
 
                             {toggleTopology && renderTopologyPath.map((path, index) => (
-                                [
+                                new Array(5).fill(0).map((_, i) => ([
                                     <TextPath
-                                        key={"f" + index + "-2"}
-                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        key={"f" + i + index + "-2"}
+                                        positions={[
+                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
+                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
+                                        ]}
                                         text={">"}
                                         // @ts-ignore
                                         color="rgba(232, 48, 94, 0.7)"
                                         repeat
                                     />,
                                     <TextPath
-                                        key={"f" + index}
-                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        key={"f" + i + index}
+                                        positions={[
+                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
+                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
+                                        ]}
                                         text={"↑ " + path[2]}
                                         attributes={{
                                             style: "fill: black; font-weight: bold;"
@@ -691,14 +677,17 @@ export default function PageDN42() {
                                         offset={18}
                                         orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
                                     />
-                                ]
-                            )).flat()}
+                                ]))
+                            )).flat(2)}
 
                             {toggleTopologyReverse && renderReverseTopologyPath.map((path, index) => (
-                                [
+                                new Array(5).fill(0).map((_, i) => ([
                                     <TextPath
-                                        key={"r" + index + "-2"}
-                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        key={"r" + i + index + "-2"}
+                                        positions={[
+                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
+                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
+                                        ]}
                                         text={">"}
                                         // @ts-ignore
                                         color="rgba(94, 232, 48, 0.7)"
@@ -706,7 +695,10 @@ export default function PageDN42() {
                                     />,
                                     <TextPath
                                         key={"f" + index}
-                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        positions={[
+                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
+                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
+                                        ]}
                                         text={"↓ " + path[2]}
                                         attributes={{
                                             style: "fill: black; font-weight: bold;"
@@ -717,7 +709,7 @@ export default function PageDN42() {
                                         offset={18}
                                         orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
                                     />
-                                ]
+                                ]))
                             )).flat()}
                         </MapContainer>
                         {(toggleTopology || toggleTopologyReverse) && <div style={{ marginBottom: 8 }}><Text size="2" color="gray">Click on a node marker to view topology for that node.</Text></div>}

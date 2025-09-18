@@ -2,7 +2,7 @@ import { ParallaxBanner } from "react-scroll-parallax";
 import cls from "./dn42.module.scss";
 import DN42 from "./../assets/images/dn42.svg?no-inline";
 import { Element } from 'react-scroll'
-import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex } from "@radix-ui/themes";
+import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex, Checkbox } from "@radix-ui/themes";
 import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone } from "react-icons/pi";
 import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -20,29 +20,6 @@ enum IPAvailability {
     Tunnel = "Tunnel",
     Yes = "Yes"
 }
-
-const AIRPORT_GEO_DATA = {
-    "lth": [10.772611, 107.045278],
-    "dfw": [32.896944, -97.038056],
-    "ord": [41.978611, -87.904722],
-    "fra": [50.033333, 8.570556],
-    "sgn": [10.818889, 106.651944],
-    "jhb": [1.640556, 103.670278],
-    "han": [21.213889, 105.803056],
-    "syd": [-33.946111, 151.177222],
-    "lax": [33.9425, -118.408056],
-    "gru": [-23.435556, -46.473056],
-    "hkg": [22.308889, 113.914444],
-    "tpa": [27.979722, -82.534722],
-    "tpe": [25.076389, 121.223889],
-    "hnd": [35.553333, 139.781111],
-    "nbj": [-9.046778, 13.507194],
-    "sjc": [37.362778, -121.929167],
-    "lhr": [51.4775, -0.461389],
-    "jfk": [40.639722, -73.778889],
-    "msp": [44.881944, -93.221667],
-    "dad": [16.043889, 108.199444]
-};
 
 const NodeTables = [
     {
@@ -396,12 +373,14 @@ export default function PageDN42() {
     const [topology, setTopology] = useState<{
         topology: Record<string, [string, string | number][]>;
         rgCode: Record<string, string>;
+        geo: Record<string, [number, number]>;
     } | null>(null);
     const [toggleTopology, setToggleTopology] = useState(false);
+    const [toggleTopologyReverse, setToggleTopologyReverse] = useState(false);
     const [currentNodeSelected, setCurrentNodeSelected] = useState<string | null>(null);
 
     const renderTopologyPath = useMemo(() => {
-        if (!topology || !currentNodeSelected) return [];
+        if (!topology || !toggleTopology || !currentNodeSelected) return [];
 
         const paths: Record<string, [[number, number], [number, number], string]> = {};
         const selectedNode = NodeTables.find(x => x.sc === currentNodeSelected)!;
@@ -413,7 +392,7 @@ export default function PageDN42() {
                 if (t) {
                     let [_, latency] = t;
                     switch (typeof latency) {
-                        case "number":
+                        case "number": {
                             let targetNode = NodeTables.find(x => x.sc === target);
                             let currentNode = NodeTables.find(x => x.sc === current);
 
@@ -425,9 +404,9 @@ export default function PageDN42() {
                                 const rg = topology?.rgCode[target];
                                 const airport = rg?.slice(3, 6).toLowerCase();
 
-                                if ((airport ?? "") in AIRPORT_GEO_DATA) {
+                                if ((airport ?? "") in (topology?.geo ?? {})) {
                                     // @ts-ignore
-                                    targetNodeCoords = AIRPORT_GEO_DATA[airport];
+                                    targetNodeCoords = topology?.geo[airport];
                                 }
                             }
 
@@ -435,9 +414,9 @@ export default function PageDN42() {
                                 const rg = topology?.rgCode[current];
                                 const airport = rg?.slice(3, 6).toLowerCase();
 
-                                if ((airport ?? "") in AIRPORT_GEO_DATA) {
+                                if ((airport ?? "") in (topology?.geo ?? {})) {
                                     // @ts-ignore
-                                    currentNodeCoords = AIRPORT_GEO_DATA[airport];
+                                    currentNodeCoords = topology?.geo[airport];
                                 }
                             }
 
@@ -445,8 +424,43 @@ export default function PageDN42() {
                                 paths[current + "-" + target] = [currentNodeCoords, targetNodeCoords, Math.ceil(latency) + "ms"];
                             }
                             break;
-                        case "string":
+                        }
+                        case "string": {
+                            // draw a line to next hop
+                            let targetNode = NodeTables.find(x => x.sc === latency);
+                            let currentNode = NodeTables.find(x => x.sc === current);
+
+                            let targetNodeCoords: [number, number] | null = targetNode ? [targetNode.lat, targetNode.lon] : null;
+                            let currentNodeCoords: [number, number] | null = currentNode ? [currentNode.lat, currentNode.lon] : null;
+
+                            // Infer from airport code if node not found
+                            if (!targetNodeCoords) {
+                                const rg = topology?.rgCode[latency];
+                                const airport = rg?.slice(3, 6).toLowerCase();
+
+                                if ((airport ?? "") in (topology?.geo ?? {})) {
+                                    // @ts-ignore
+                                    targetNodeCoords = topology?.geo[airport];
+                                }
+                            }
+
+                            if (!currentNodeCoords) {
+                                const rg = topology?.rgCode[current];
+                                const airport = rg?.slice(3, 6).toLowerCase();
+
+                                if ((airport ?? "") in (topology?.geo ?? {})) {
+                                    // @ts-ignore
+                                    currentNodeCoords = topology?.geo[airport];
+                                }
+                            }
+
+                            if (currentNodeCoords && targetNodeCoords) {
+                                paths[current + "-" + latency] = [currentNodeCoords, targetNodeCoords, latency];
+                            }
+
                             recursivelyTraversePath(target, latency, past.concat(current));
+                            break;
+                        }
                     }
                 }
             }
@@ -461,9 +475,9 @@ export default function PageDN42() {
                         const rg = topology.rgCode[peer];
                         const airport = rg.slice(3, 6).toLowerCase();
 
-                        if (airport in AIRPORT_GEO_DATA) {
+                        if (airport in (topology?.geo ?? {})) {
                             // @ts-ignore
-                            const [lat, lon] = AIRPORT_GEO_DATA[airport];
+                            const [lat, lon] = topology?.geo[airport];
                             paths[peer] = [[selectedNode.lat, selectedNode.lon], [lat, lon], Math.ceil(nextHopOrLatency) + "ms"];
                         }
                     }
@@ -476,13 +490,71 @@ export default function PageDN42() {
         return Object.values(paths);
     }, [topology, toggleTopology, currentNodeSelected]);
 
+    const renderReverseTopologyPath = useMemo(() => {
+        if (!topology || !toggleTopologyReverse || !currentNodeSelected) return [];
+
+        const paths: Record<string, [[number, number], [number, number], string]> = {};
+        const selectedNode = NodeTables.find(x => x.sc === currentNodeSelected)!;
+        for (let revNode in topology.topology) {
+            if (revNode === currentNodeSelected) continue;
+
+            let revNodeData = NodeTables.find(x => x.sc === revNode);
+            let revNodeCoords: [number, number] | null = revNodeData ? [revNodeData.lat, revNodeData.lon] : null;
+            if (!revNodeCoords) {
+                // Airport approximation
+                const rg = topology?.rgCode[revNode];
+                const airport = rg?.slice(3, 6).toLowerCase();
+
+                if ((airport ?? "") in (topology?.geo ?? {})) {
+                    // @ts-ignore
+                    revNodeCoords = topology?.geo[airport];
+                } else {
+                    continue;
+                }
+            }
+
+            let [, nextHopOrLatency] = topology.topology[revNode].find(x => x[0] === currentNodeSelected) || [];
+            if (!nextHopOrLatency) continue;
+
+            switch (typeof nextHopOrLatency) {
+                case "number": {
+                    paths[revNode] = [revNodeCoords, [selectedNode.lat, selectedNode.lon], Math.ceil(nextHopOrLatency) + "ms"];
+                    break;
+                }
+
+                case "string": {
+                    // draw a line to next hop only. since we know every node will eventually lead to currentNodeSelected
+                    // we don't need to recursively traverse the path
+                    let targetNode = NodeTables.find(x => x.sc === nextHopOrLatency);
+                    let targetNodeLatency = topology.topology[revNode]?.find(x => x[0] === nextHopOrLatency)?.[1];
+                    if (targetNode) {
+                        paths[revNode + "-" + nextHopOrLatency] = [revNodeCoords, [targetNode.lat, targetNode.lon], Math.ceil(targetNodeLatency as number) + "ms"];
+                    } else {
+                        // Infer from airport code if node not found
+                        const rg = topology?.rgCode[nextHopOrLatency];
+                        const airport = rg?.slice(3, 6).toLowerCase();
+                        if ((airport ?? "") in (topology?.geo ?? {})) {
+                            // @ts-ignore
+                            const [lat, lon] = topology?.geo[airport];
+                            let targetNodeLatency = topology.topology[revNode]?.find(x => x[0] === nextHopOrLatency)?.[1];
+                            paths[revNode + "-" + nextHopOrLatency] = [revNodeCoords, [lat, lon], Math.ceil(targetNodeLatency as number) + "ms"];
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        return Object.values(paths);
+    }, [topology, toggleTopology, toggleTopologyReverse, currentNodeSelected]);
+
     useEffect(() => {
         if (toggleTopology) {
             function fetchTopology() {
                 fetch("https://lambda-landing.badaimweeb.me/topology")
                     .then(res => res.json())
                     .then(data => setTopology(data))
-                    .catch(() => {});
+                    .catch(() => { });
             }
 
             fetchTopology();
@@ -560,7 +632,15 @@ export default function PageDN42() {
                             <Text as="label" size="2">
                                 <Flex gap="2">
                                     <Switch size="3" checked={toggleTopology} onCheckedChange={setToggleTopology} />
-                                    Toggle topology viewing (click on a node to see routing and latency to other nodes)
+                                    Toggle topology viewing (forward path)
+                                </Flex>
+                            </Text>
+                        </div>
+                        <div style={{ marginBottom: 16 }}>
+                            <Text as="label" size="2">
+                                <Flex gap="2">
+                                    <Switch size="3" checked={toggleTopologyReverse} onCheckedChange={setToggleTopologyReverse} />
+                                    Toggle topology viewing (reverse path)
                                 </Flex>
                             </Text>
                         </div>
@@ -587,29 +667,60 @@ export default function PageDN42() {
                                     </Marker>
                                 )))}
                             </MarkerClusterGroup>
+
                             {toggleTopology && renderTopologyPath.map((path, index) => (
-                                [<TextPath
-                                    key={index + "-2"}
-                                    positions={path.slice(0, 2) as [[number, number], [number, number]]}
-                                    text={">"}
-                                    // @ts-ignore
-                                    color="rgba(232, 48, 94, 0.7)"
-                                    repeat
-                                />,<TextPath
-                                    key={index} 
-                                    positions={path.slice(0, 2) as [[number, number], [number, number]]}
-                                    text={path[2]}
-                                    attributes={{
-                                        style: "fill: black; font-weight: bold;"
-                                    }}
-                                    // @ts-ignore
-                                    stroke={false}
-                                    center
-                                    offset={12}
-                                    orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
-                                />]
+                                [
+                                    <TextPath
+                                        key={"f" + index + "-2"}
+                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        text={">"}
+                                        // @ts-ignore
+                                        color="rgba(232, 48, 94, 0.7)"
+                                        repeat
+                                    />,
+                                    <TextPath
+                                        key={"f" + index}
+                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        text={"↑ " + path[2]}
+                                        attributes={{
+                                            style: "fill: black; font-weight: bold;"
+                                        }}
+                                        // @ts-ignore
+                                        stroke={false}
+                                        center
+                                        offset={18}
+                                        orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
+                                    />
+                                ]
+                            )).flat()}
+
+                            {toggleTopologyReverse && renderReverseTopologyPath.map((path, index) => (
+                                [
+                                    <TextPath
+                                        key={"r" + index + "-2"}
+                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        text={">"}
+                                        // @ts-ignore
+                                        color="rgba(94, 232, 48, 0.7)"
+                                        repeat
+                                    />,
+                                    <TextPath
+                                        key={"f" + index}
+                                        positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                        text={"↓ " + path[2]}
+                                        attributes={{
+                                            style: "fill: black; font-weight: bold;"
+                                        }}
+                                        // @ts-ignore
+                                        stroke={false}
+                                        center
+                                        offset={18}
+                                        orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
+                                    />
+                                ]
                             )).flat()}
                         </MapContainer>
+                        {(toggleTopology || toggleTopologyReverse) && <div style={{ marginBottom: 8 }}><Text size="2" color="gray">Click on a node marker to view topology for that node.</Text></div>}
                         <br />
                         <Link href="#bruh" onClick={() => setOpenTable(x => !x)}>{!openTable ? "or view a table of nodes instead..." : "close table"}</Link>
                         {openTable && (

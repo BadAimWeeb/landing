@@ -475,7 +475,18 @@ export default function PageDN42() {
             }
         }
 
-        return Object.values(paths);
+        return Object.values(paths)
+            // Merge paths that share the same coordinates (not necessary same device)
+            .reduce((acc, cur) => {
+                const existing = acc.find(x => x[0][0] === cur[0][0] && x[0][1] === cur[0][1] && x[1][0] === cur[1][0] && x[1][1] === cur[1][1]);
+                if (existing) {
+                    existing[2] += " / " + cur[2];
+                } else {
+                    acc.push(cur);
+                }
+
+                return acc;
+            }, [] as [[number, number], [number, number], string][]);
     }, [topology, toggleTopology, currentNodeSelected]);
 
     const renderReverseTopologyPath = useMemo(() => {
@@ -525,7 +536,18 @@ export default function PageDN42() {
             }
         }
 
-        return Object.values(paths);
+        return Object.values(paths)
+            // Merge paths that share the same coordinates (not necessary same device)
+            .reduce((acc, cur) => {
+                const existing = acc.find(x => x[0][0] === cur[0][0] && x[0][1] === cur[0][1] && x[1][0] === cur[1][0] && x[1][1] === cur[1][1]);
+                if (existing) {
+                    existing[2] += " / " + cur[2];
+                } else {
+                    acc.push(cur);
+                }
+
+                return acc;
+            }, [] as [[number, number], [number, number], string][]);
     }, [topology, toggleTopology, toggleTopologyReverse, currentNodeSelected]);
 
     useEffect(() => {

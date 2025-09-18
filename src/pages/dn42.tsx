@@ -515,10 +515,10 @@ export default function PageDN42() {
                     const nextHopLatency = topology.topology[revNode]?.find(x => x[0] === nextHopOrLatency)?.[1];
                     if (typeof nextHopLatency !== "number") break;
 
-                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], nextHopCoords[1]);
+                    const mirrorOffset = mirrorNearest(revNodeCoords[1], nextHopCoords[1]);
                     nextHopCoords[1] += mirrorOffset;
 
-                    paths[revNode] = [nextHopCoords, selectedNodeCoords, Math.ceil(nextHopLatency) + "ms"];
+                    paths[revNode + "-" + nextHop] = [revNodeCoords, nextHopCoords, Math.ceil(nextHopLatency) + "ms"];
 
                     break;
                 }
@@ -529,7 +529,7 @@ export default function PageDN42() {
     }, [topology, toggleTopology, toggleTopologyReverse, currentNodeSelected]);
 
     useEffect(() => {
-        if (toggleTopology) {
+        if (toggleTopology || toggleTopologyReverse) {
             function fetchTopology() {
                 fetch("https://lambda-landing.badaimweeb.me/topology")
                     .then(res => res.json())
@@ -541,7 +541,7 @@ export default function PageDN42() {
             const interval = setInterval(fetchTopology, 60 * 1000);
             return () => clearInterval(interval);
         }
-    }, [toggleTopology]);
+    }, [toggleTopology, toggleTopologyReverse]);
 
     return (
         <div className={cls.HomePage}>

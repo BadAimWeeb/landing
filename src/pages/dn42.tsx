@@ -2,7 +2,7 @@ import { ParallaxBanner } from "react-scroll-parallax";
 import cls from "./dn42.module.scss";
 import DN42 from "./../assets/images/dn42.svg?no-inline";
 import { Element } from 'react-scroll'
-import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex, Checkbox } from "@radix-ui/themes";
+import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex } from "@radix-ui/themes";
 import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone } from "react-icons/pi";
 import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
 import MarkerClusterGroup from "react-leaflet-cluster";

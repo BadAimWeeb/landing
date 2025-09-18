@@ -10,18 +10,21 @@
         "@radix-ui/themes": "^3.2.1",
         "clsx": "^2.1.1",
         "leaflet": "^1.9.4",
+        "leaflet-textpath": "^1.3.0",
         "leaflet.markercluster": "^1.5.3",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
         "react-icons": "^5.5.0",
         "react-leaflet": "^5.0.0-rc.2",
         "react-leaflet-cluster": "^3.1.1",
+        "react-leaflet-textpath": "^2.1.1",
         "react-scroll": "^1.9.3",
         "react-scroll-parallax": "^3.4.5",
       },
       "devDependencies": {
         "@eslint/js": "^9.34.0",
         "@types/leaflet": "^1.9.20",
+        "@types/leaflet-textpath": "^1.2.6",
         "@types/leaflet.markercluster": "^1.5.6",
         "@types/react": "^19.1.12",
         "@types/react-dom": "^19.1.9",
@@ -561,6 +564,8 @@
 
     "@types/leaflet": ["@types/leaflet@1.9.20", "", { "dependencies": { "@types/geojson": "*" } }, "sha512-rooalPMlk61LCaLOvBF2VIf9M47HgMQqi5xQ9QRi7c8PkdIe0WrIi5IxXUXQjAdL0c+vcQ01mYWbthzmp9GHWw=="],
 
+    "@types/leaflet-textpath": ["@types/leaflet-textpath@1.2.6", "", { "dependencies": { "@types/leaflet": "^1.9", "@types/react": "*" } }, "sha512-nsAVw2VniZr5pwZKTsBHQuVcB2gYHujr1uLziuK9xIbUWKrrYa/K0wq121ix2S5XgNAmWy71oV1QcPCxyhSsLw=="],
+
     "@types/leaflet.markercluster": ["@types/leaflet.markercluster@1.5.6", "", { "dependencies": { "@types/leaflet": "^1.9" } }, "sha512-I7hZjO2+isVXGYWzKxBp8PsCzAYCJBc29qBdFpquOCkS7zFDqUsUvkEOyQHedsk/Cy5tocQzf+Ndorm5W9YKTQ=="],
 
     "@types/prop-types": ["@types/prop-types@15.7.15", "", {}, "sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw=="],
@@ -769,6 +774,8 @@
 
     "leaflet": ["leaflet@1.9.4", "", {}, "sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA=="],
 
+    "leaflet-textpath": ["leaflet-textpath@1.3.0", "", { "peerDependencies": { "leaflet": "^1.3.1" } }, "sha512-swbb8Dvaf7T4j8u/TqUC/rNtADuQ5GOcOxiWN6btj8VzBH2t+DPYL/yH+OjFSG/04FXZ5dJ1lqZ2efLhnmWzNQ=="],
+
     "leaflet.markercluster": ["leaflet.markercluster@1.5.3", "", { "peerDependencies": { "leaflet": "^1.3.1" } }, "sha512-vPTw/Bndq7eQHjLBVlWpnGeLa3t+3zGiuM7fJwCkiMFq+nmRuG3RI3f7f4N4TDX7T4NpbAXpR2+NTRSEGfCSeA=="],
 
     "levn": ["levn@0.4.1", "", { "dependencies": { "prelude-ls": "^1.2.1", "type-check": "~0.4.0" } }, "sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ=="],
@@ -850,6 +857,8 @@
     "react-leaflet": ["react-leaflet@5.0.0-rc.2", "", { "dependencies": { "@react-leaflet/core": "^3.0.0-rc.2" }, "peerDependencies": { "leaflet": "^1.9.0", "react": "^19.0.0", "react-dom": "^19.0.0" } }, "sha512-1xQGYG9mEIW+nfkQhqgHImwUuB1UDlnzYFSzv6PrBFDBeYrFmv0BbpwpNAFdJg/UQ2yz5UZSL7ZwlUxjwb8MZw=="],
 
     "react-leaflet-cluster": ["react-leaflet-cluster@3.1.1", "", { "dependencies": { "leaflet.markercluster": "^1.5.3" }, "peerDependencies": { "leaflet": "^1.8.0", "react": "^18.2.0 || ^19.0.0", "react-dom": "^18.2.0 || ^19.0.0", "react-leaflet": "^4.0.0" } }, "sha512-g39QohKNrmIwHNlL0KTv+a9PYYWDtcRAsnHHytJyRhIgjxGxs4/SXe/Zr4kP8IZoEzxbqCMkJqUsFBEZJqKp2g=="],
+
+    "react-leaflet-textpath": ["react-leaflet-textpath@2.1.1", "", { "dependencies": { "leaflet-textpath": "^1.2.3" }, "peerDependencies": { "leaflet": "^1.0.0", "react": "^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom": "^15.0.0 || ^16.0.0 || ^17.0.0", "react-leaflet": "^3.0.0" } }, "sha512-GeIetwbjB/Jcj2ORwfWynM3LzmJSvaOmb/qIaVkPTAw+rZfBmQZAVKNVm/ethg5MoUX/4ZJy4wvzbsDGKahTMw=="],
 
     "react-remove-scroll": ["react-remove-scroll@2.7.1", "", { "dependencies": { "react-remove-scroll-bar": "^2.3.7", "react-style-singleton": "^2.2.3", "tslib": "^2.1.0", "use-callback-ref": "^1.3.3", "use-sidecar": "^1.1.3" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-HpMh8+oahmIdOuS5aFKKY6Pyog+FNaZV/XyJOq7b4YFwsFHe5yYfdbIalI4k3vU2nSDql7YskmUseHsRrJqIPA=="],
 

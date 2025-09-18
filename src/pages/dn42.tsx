@@ -2,11 +2,12 @@ import { ParallaxBanner } from "react-scroll-parallax";
 import cls from "./dn42.module.scss";
 import DN42 from "./../assets/images/dn42.svg?no-inline";
 import { Element } from 'react-scroll'
-import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card } from "@radix-ui/themes";
+import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex } from "@radix-ui/themes";
 import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone } from "react-icons/pi";
 import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { useMemo, useState } from "react";
+import TextPath from 'react-leaflet-textpath';
+import { useEffect, useMemo, useState } from "react";
 import { Icon } from "leaflet";
 
 import MarkerIcon from "leaflet/dist/images/marker-icon.png";
@@ -20,6 +21,29 @@ enum IPAvailability {
     Yes = "Yes"
 }
 
+const AIRPORT_GEO_DATA = {
+    "lth": [10.772611, 107.045278],
+    "dfw": [32.896944, -97.038056],
+    "ord": [41.978611, -87.904722],
+    "fra": [50.033333, 8.570556],
+    "sgn": [10.818889, 106.651944],
+    "jhb": [1.640556, 103.670278],
+    "han": [21.213889, 105.803056],
+    "syd": [-33.946111, 151.177222],
+    "lax": [33.9425, -118.408056],
+    "gru": [-23.435556, -46.473056],
+    "hkg": [22.308889, 113.914444],
+    "tpa": [27.979722, -82.534722],
+    "tpe": [25.076389, 121.223889],
+    "hnd": [35.553333, 139.781111],
+    "nbj": [-9.046778, 13.507194],
+    "sjc": [37.362778, -121.929167],
+    "lhr": [51.4775, -0.461389],
+    "jfk": [40.639722, -73.778889],
+    "msp": [44.881944, -93.221667],
+    "dad": [16.043889, 108.199444]
+};
+
 const NodeTables = [
     {
         sc: "A00",
@@ -30,7 +54,40 @@ const NodeTables = [
         endpoint: "<contact>.rc.badaimweeb.me",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
-        notes: "Residental network. A04-A06 run through this router."
+        notes: "Residental network."
+    },
+    {
+        sc: "A04",
+        rc: "vn-lth3",
+        flag: "🇻🇳",
+        lat: 10.772611,
+        lon: 107.045278,
+        endpoint: "vn-lth3.rc.badaimweeb.me",
+        ipv4: IPAvailability.NAT,
+        ipv6: IPAvailability.Yes,
+        notes: "Residental network. Upstream is A00."
+    },
+    {
+        sc: "A05",
+        rc: "vn-lth4",
+        flag: "🇻🇳",
+        lat: 10.772611,
+        lon: 107.045278,
+        endpoint: "vn-lth4.rc.badaimweeb.me",
+        ipv4: IPAvailability.NAT,
+        ipv6: IPAvailability.Yes,
+        notes: "Residental network. Upstream is A00."
+    },
+    {
+        sc: "A06",
+        rc: "vn-lth5",
+        flag: "🇻🇳",
+        lat: 10.772611,
+        lon: 107.045278,
+        endpoint: "vn-lth5.rc.badaimweeb.me",
+        ipv4: IPAvailability.NAT,
+        ipv6: IPAvailability.Yes,
+        notes: "Residental network. Upstream is A00."
     },
     {
         sc: "C02",
@@ -242,6 +299,17 @@ const NodeTables = [
         notes: null
     },
     {
+        sc: "G00",
+        rc: "us-msp3",
+        flag: "🇺🇸",
+        lat: 44.881944,
+        lon: -93.221667,
+        endpoint: "<contact>.rc.badaimweeb.me",
+        ipv4: IPAvailability.NAT,
+        ipv6: IPAvailability.Yes,
+        notes: "Residental network. This node may not be used as transit to other AS since it has low upload/download speed. Dual upstream T-Mobile 5G & Comcast @ G99."
+    },
+    {
         sc: "G99",
         rc: "us-msp1",
         flag: "🇺🇸",
@@ -318,12 +386,110 @@ export default function PageDN42() {
         iconUrl: MarkerIcon,
         iconRetinaUrl: MarkerIcon2X,
         shadowUrl: MarkerShadow,
-        iconSize:    [25, 41],
-		iconAnchor:  [12, 41],
-		popupAnchor: [1, -34],
-		tooltipAnchor: [16, -28],
-		shadowSize:  [41, 41]
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize: [41, 41]
     }), []);
+
+    const [topology, setTopology] = useState<{
+        topology: Record<string, [string, string | number][]>;
+        rgCode: Record<string, string>;
+    } | null>(null);
+    const [toggleTopology, setToggleTopology] = useState(false);
+    const [currentNodeSelected, setCurrentNodeSelected] = useState<string | null>(null);
+
+    const renderTopologyPath = useMemo(() => {
+        if (!topology || !currentNodeSelected) return [];
+
+        const paths: Record<string, [[number, number], [number, number], string]> = {};
+        const selectedNode = NodeTables.find(x => x.sc === currentNodeSelected)!;
+        for (let [peer, nextHopOrLatency] of topology.topology[currentNodeSelected] || []) {
+            function recursivelyTraversePath(target: string, current: string, past: string[] = []) {
+                if (past.includes(current)) return; // avoid circular path
+
+                let t = topology?.topology[current]?.find(x => x[0] === target);
+                if (t) {
+                    let [_, latency] = t;
+                    switch (typeof latency) {
+                        case "number":
+                            let targetNode = NodeTables.find(x => x.sc === target);
+                            let currentNode = NodeTables.find(x => x.sc === current);
+
+                            let targetNodeCoords: [number, number] | null = targetNode ? [targetNode.lat, targetNode.lon] : null;
+                            let currentNodeCoords: [number, number] | null = currentNode ? [currentNode.lat, currentNode.lon] : null;
+
+                            // Infer from airport code if node not found
+                            if (!targetNodeCoords) {
+                                const rg = topology?.rgCode[target];
+                                const airport = rg?.slice(3, 6).toLowerCase();
+
+                                if ((airport ?? "") in AIRPORT_GEO_DATA) {
+                                    // @ts-ignore
+                                    targetNodeCoords = AIRPORT_GEO_DATA[airport];
+                                }
+                            }
+
+                            if (!currentNodeCoords) {
+                                const rg = topology?.rgCode[current];
+                                const airport = rg?.slice(3, 6).toLowerCase();
+
+                                if ((airport ?? "") in AIRPORT_GEO_DATA) {
+                                    // @ts-ignore
+                                    currentNodeCoords = AIRPORT_GEO_DATA[airport];
+                                }
+                            }
+
+                            if (currentNodeCoords && targetNodeCoords) {
+                                paths[current + "-" + target] = [currentNodeCoords, targetNodeCoords, Math.ceil(latency) + "ms"];
+                            }
+                            break;
+                        case "string":
+                            recursivelyTraversePath(target, latency, past.concat(current));
+                    }
+                }
+            }
+
+            switch (typeof nextHopOrLatency) {
+                case "number":
+                    let node = NodeTables.find(x => x.sc === peer);
+                    if (node) {
+                        paths[peer] = [[selectedNode.lat, selectedNode.lon], [node.lat, node.lon], Math.ceil(nextHopOrLatency) + "ms"];
+                    } else {
+                        // Infer from airport code
+                        const rg = topology.rgCode[peer];
+                        const airport = rg.slice(3, 6).toLowerCase();
+
+                        if (airport in AIRPORT_GEO_DATA) {
+                            // @ts-ignore
+                            const [lat, lon] = AIRPORT_GEO_DATA[airport];
+                            paths[peer] = [[selectedNode.lat, selectedNode.lon], [lat, lon], Math.ceil(nextHopOrLatency) + "ms"];
+                        }
+                    }
+                    break;
+                case "string":
+                    recursivelyTraversePath(peer, nextHopOrLatency, [currentNodeSelected]);
+            }
+        }
+
+        return Object.values(paths);
+    }, [topology, toggleTopology, currentNodeSelected]);
+
+    useEffect(() => {
+        if (toggleTopology) {
+            function fetchTopology() {
+                fetch("https://lambda-landing.badaimweeb.me/topology")
+                    .then(res => res.json())
+                    .then(data => setTopology(data))
+                    .catch(() => {});
+            }
+
+            fetchTopology();
+            const interval = setInterval(fetchTopology, 60 * 1000);
+            return () => clearInterval(interval);
+        }
+    }, [toggleTopology]);
 
     return (
         <div className={cls.HomePage}>
@@ -390,6 +556,15 @@ export default function PageDN42() {
                 </div>
                 <div className={cls.BodyNodeList}>
                     <div className={cls.Content}>
+                        <div style={{ marginBottom: 16 }}>
+                            <Text as="label" size="2">
+                                <Flex gap="2">
+                                    <Switch size="3" checked={toggleTopology} onCheckedChange={setToggleTopology} />
+                                    Toggle topology viewing (click on a node to see routing and latency to other nodes)
+                                </Flex>
+                            </Text>
+                        </div>
+
                         <MapContainer worldCopyJump center={[20, 0]} zoom={1.5} id="dn42-overview-map" className={cls.MapOverview}>
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -398,7 +573,11 @@ export default function PageDN42() {
                             <MarkerClusterGroup zoomToBoundsOnClick maxClusterRadius={15}>
                                 {NodeTables.map((node, index) => new Array(5).fill(0).map((_, i) => (
                                     <Marker icon={MarkerIconLL} position={[node.lat, node.lon + ((+i - 2) * 360)]} key={index + "-" + i}>
-                                        <MapPopup interactive>
+                                        <MapPopup autoPan interactive eventHandlers={{
+                                            add: () => {
+                                                setCurrentNodeSelected(node.sc);
+                                            }
+                                        }}>
                                             {node.flag} <strong>{node.rc}</strong> ({node.sc})<br /><br />
                                             Endpoint: <code>{node.endpoint}</code><br />
                                             IPv4: <Badge size="2" variant="solid" color={node.ipv4 === IPAvailability.Yes ? "green" : node.ipv4 === IPAvailability.No ? "red" : "yellow"}>{node.ipv4}</Badge>&nbsp;/&nbsp;
@@ -408,6 +587,28 @@ export default function PageDN42() {
                                     </Marker>
                                 )))}
                             </MarkerClusterGroup>
+                            {toggleTopology && renderTopologyPath.map((path, index) => (
+                                [<TextPath
+                                    key={index + "-2"}
+                                    positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                    text={">"}
+                                    // @ts-ignore
+                                    color="rgba(232, 48, 94, 0.7)"
+                                    repeat
+                                />,<TextPath
+                                    key={index} 
+                                    positions={path.slice(0, 2) as [[number, number], [number, number]]}
+                                    text={path[2]}
+                                    attributes={{
+                                        style: "fill: black; font-weight: bold;"
+                                    }}
+                                    // @ts-ignore
+                                    stroke={false}
+                                    center
+                                    offset={12}
+                                    orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
+                                />]
+                            )).flat()}
                         </MapContainer>
                         <br />
                         <Link href="#bruh" onClick={() => setOpenTable(x => !x)}>{!openTable ? "or view a table of nodes instead..." : "close table"}</Link>

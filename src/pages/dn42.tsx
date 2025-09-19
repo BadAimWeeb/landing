@@ -386,7 +386,7 @@ function getCoords(nodeName: string, topology: { rgCode: Record<string, string>;
 }
 
 function mirrorNearest(startLon: number, targetLon: number): number {
-    if (Number.EPSILON * 2 <= Math.abs(targetLon - startLon)) {
+    if (Number.EPSILON * 2 > Math.abs(targetLon - startLon)) {
         return 0;
     }
 

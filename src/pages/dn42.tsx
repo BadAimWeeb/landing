@@ -374,12 +374,14 @@ function getCoords(nodeName: string, topology: { rgCode: Record<string, string>;
 
     const airport = rg.slice(3, 6).toLowerCase();
     if (airport in topology.geo) {
-        return topology.geo[airport];
+        const g = topology.geo[airport];
+        return [g[0], g[1]];
     }
 
     if (airport in ExtendedAirportTables) {
         // @ts-ignore
-        return ExtendedAirportTables[airport];
+        const g = ExtendedAirportTables[airport];
+        return [g[0], g[1]];
     }
 
     return null;

@@ -21,6 +21,10 @@ enum IPAvailability {
     Yes = "Yes"
 }
 
+const ExtendedAirportTables = {
+    "msp": [44.881944, -93.221667]
+}
+
 const NodeTables = [
     {
         sc: "A00",
@@ -363,9 +367,19 @@ function getCoords(nodeName: string, topology: { rgCode: Record<string, string>;
 
     // Infer from airport code
     const rg = topology.rgCode[nodeName];
+    if (!rg) {
+        console.warn("Region code for", nodeName, "not found. That should not have happened.");
+        return null;
+    }
+
     const airport = rg.slice(3, 6).toLowerCase();
     if (airport in topology.geo) {
         return topology.geo[airport];
+    }
+
+    if (airport in ExtendedAirportTables) {
+        // @ts-ignore
+        return ExtendedAirportTables[airport];
     }
 
     return null;

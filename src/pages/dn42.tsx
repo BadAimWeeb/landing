@@ -13,6 +13,9 @@ import { Icon } from "leaflet";
 import MarkerIcon from "leaflet/dist/images/marker-icon.png";
 import MarkerIcon2X from "leaflet/dist/images/marker-icon-2x.png";
 import MarkerShadow from "leaflet/dist/images/marker-shadow.png";
+import { FullscreenControl } from "react-leaflet-fullscreen";
+
+import "react-leaflet-fullscreen/styles.css";
 
 enum IPAvailability {
     No = "No",
@@ -473,6 +476,10 @@ export default function PageDN42() {
     const [toggleTopology, setToggleTopology] = useState(false);
     const [toggleTopologyReverse, setToggleTopologyReverse] = useState(false);
     const [currentNodeSelected, setCurrentNodeSelected] = useState<string | null>(null);
+    const currentNodeRCSelected = useMemo(() => {
+        if (!currentNodeSelected) return null;
+        return NodeTables.find(x => x.sc === currentNodeSelected)?.rc || null;
+    }, [currentNodeSelected]);
 
     const renderTopologyPath = useMemo(() => {
         if (!topology || !toggleTopology || !currentNodeSelected) return [];
@@ -735,9 +742,12 @@ export default function PageDN42() {
                         </div>
 
                         <MapContainer worldCopyJump center={[20, 0]} zoom={1.5} id="dn42-overview-map" className={cls.MapOverview}>
+                            <FullscreenControl />
                             <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='Maps &copy; <a href="https://www.thunderforest.com/">Thunderforest</a>, Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                url="https://tile.thunderforest.com/transport-dark/{z}/{x}/{y}{r}.png?apikey=491724f125b64e5299d20c9c1c17309d"
+                                maxZoom={18}
                             />
                             <MarkerClusterGroup zoomToBoundsOnClick maxClusterRadius={15}>
                                 {NodeTables.map((node, index) => new Array(5).fill(0).map((_, i) => (
@@ -766,8 +776,12 @@ export default function PageDN42() {
                                             [path[1][0], path[1][1] + ((+i - 2) * 360)]
                                         ]}
                                         text={">"}
+                                        attributes={{
+                                            fill: "#E5484D",
+                                            style: "font-size: 8px"
+                                        }}
                                         // @ts-ignore
-                                        color="rgba(232, 48, 94, 0.7)"
+                                        color="#FF204756"
                                         repeat
                                     />,
                                     <TextPath
@@ -778,7 +792,8 @@ export default function PageDN42() {
                                         ]}
                                         text={"↑ " + path[2]}
                                         attributes={{
-                                            style: "fill: black; font-weight: bold;"
+                                            style: "font-weight: bold;",
+                                            fill: "#FFD1D9"
                                         }}
                                         // @ts-ignore
                                         stroke={false}
@@ -798,8 +813,12 @@ export default function PageDN42() {
                                             [path[1][0], path[1][1] + ((+i - 2) * 360)]
                                         ]}
                                         text={">"}
+                                        attributes={{
+                                            fill: "#30A46C",
+                                            style: "font-size: 8px"
+                                        }}
                                         // @ts-ignore
-                                        color="rgba(94, 232, 48, 0.7)"
+                                        color="#22FF991E"
                                         repeat
                                     />,
                                     <TextPath
@@ -810,7 +829,8 @@ export default function PageDN42() {
                                         ]}
                                         text={"↓ " + path[2]}
                                         attributes={{
-                                            style: "fill: black; font-weight: bold;"
+                                            style: "font-weight: bold;",
+                                            fill: "#B1F1CB"
                                         }}
                                         // @ts-ignore
                                         stroke={false}
@@ -821,7 +841,10 @@ export default function PageDN42() {
                                 ]))
                             )).flat()}
                         </MapContainer>
-                        {(toggleTopology || toggleTopologyReverse) && <div style={{ marginBottom: 8 }}><Text size="2" color="gray">Click on a node marker to view topology for that node.</Text></div>}
+                        {(toggleTopology || toggleTopologyReverse) && <div style={{ marginBottom: 8 }}>
+                            <Text size="2" color="gray">Click on a node marker to view topology for that node.</Text>
+                            {!!currentNodeSelected && <><br /><Text size="2" color="gray">Currently viewing topology for <strong>{currentNodeRCSelected}</strong> ({currentNodeSelected}). <Link href="#bruh" onClick={() => setCurrentNodeSelected(null)}>Clear selection</Link></Text></>}
+                        </div>}
                         <br />
                         <Link href="#bruh" onClick={() => setOpenTable(x => !x)}>{!openTable ? "or view a table of nodes instead..." : "close table"}</Link>
                         {openTable && (

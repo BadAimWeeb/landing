@@ -7,7 +7,7 @@ import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuo
 import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
 import MarkerClusterGroup from "react-leaflet-cluster";
 import TextPath from 'react-leaflet-textpath';
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Icon } from "leaflet";
 
 import MarkerIcon from "leaflet/dist/images/marker-icon.png";
@@ -178,7 +178,7 @@ const NodeTables = [
         endpoint: "br-gru1.rc.badaimweeb.me",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
-        notes: null
+        notes: "Unmetered connection @ 300Mbps"
     },
     {
         sc: "C13",
@@ -267,6 +267,61 @@ const NodeTables = [
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Unmetered connection @ 10Gbps"
+    },
+    {
+        sc: "C21",
+        rc: "ru-ovb1",
+        flag: "🇷🇺",
+        lat: 55.0125,
+        lon: 82.650556,
+        endpoint: "ru-ovb1.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: "Unmetered connection @ 300Mbps"
+    },
+    {
+        sc: "C22",
+        rc: "in-bom1",
+        flag: "🇮🇳",
+        lat: 19.088611,
+        lon: 72.868056,
+        endpoint: "in-bom1.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.No,
+        notes: null
+    },
+    {
+        sc: "D01",
+        rc: "au-syd2",
+        flag: "🇦🇺",
+        lat: -33.946111,
+        lon: 151.177222,
+        endpoint: "au-syd2.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.No,
+        notes: "Non-permanent node."
+    },
+    {
+        sc: "D02",
+        rc: "us-lax2",
+        flag: "🇺🇸",
+        lat: 33.9425,
+        lon: -118.408056,
+        endpoint: "us-lax2.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: "Non-permanent node."
+    },
+    {
+        sc: "D04",
+        rc: "sg-sin2",
+        flag: "🇸🇬",
+        lat: 1.359167,
+        lon: 103.989444,
+        endpoint: "sg-sin2.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: "Non-permanent node."
     },
     {
         sc: "E03",
@@ -580,10 +635,22 @@ export default function PageDN42() {
             }
 
             fetchTopology();
-            const interval = setInterval(fetchTopology, 60 * 1000);
+            fetchTopology();
+            const interval = setInterval(fetchTopology, 25 * 1000);
             return () => clearInterval(interval);
         }
     }, [toggleTopology, toggleTopologyReverse]);
+
+    const [sortBy, setSortBy] = useState<"sc" | "rc">("sc");
+    const [sortDirection, setSortDirection] = useState<1 | -1>(1);
+
+    const handleSortChange = useCallback((sort: typeof sortBy) => {
+        if (sort === sortBy) {
+            setSortDirection(oldSortDirection => (oldSortDirection === 1 ? -1 : 1));
+        } else {
+            setSortBy(sort);
+        }
+    }, [sortBy, setSortBy, setSortDirection]);
 
     return (
         <div className={cls.HomePage}>
@@ -762,8 +829,8 @@ export default function PageDN42() {
                                 <Table.Root>
                                     <Table.Header>
                                         <Table.Row>
-                                            <Table.ColumnHeaderCell>Server</Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell>Region Code</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell><Link href="#sort" onClick={() => handleSortChange("sc")}>Server</Link></Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell><Link href="#sort" onClick={() => handleSortChange("rc")}>Region Code</Link></Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell>IPv4</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell>IPv6</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell>Endpoint</Table.ColumnHeaderCell>
@@ -771,7 +838,15 @@ export default function PageDN42() {
                                         </Table.Row>
                                     </Table.Header>
                                     <Table.Body>
-                                        {NodeTables.map((node, index) => (
+                                        {NodeTables
+                                            .slice()
+                                            .sort((a, b) => {
+                                                if (a[sortBy] < b[sortBy]) return -1 * sortDirection;
+                                                if (a[sortBy] > b[sortBy]) return 1 * sortDirection;
+
+                                                return 0;
+                                            })
+                                            .map((node, index) => (
                                             <Table.Row key={index}>
                                                 <Table.Cell>{node.sc}</Table.Cell>
                                                 <Table.Cell>{node.rc}</Table.Cell>

@@ -294,6 +294,28 @@ const NodeTables = [
         notes: null
     },
     {
+        sc: "C23",
+        rc: "us-mci1",
+        flag: "🇺🇸",
+        lat: 39.2975,
+        lon: -94.713889,
+        endpoint: "us-mci1.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: "Unmetered connection @ 1Gbps"
+    },
+    {
+        sc: "C24",
+        rc: "au-mel1",
+        flag: "🇦🇺",
+        lat: -37.673333,
+        lon: 144.843333,
+        endpoint: "au-mel1.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: null
+    },
+    {
         sc: "D01",
         rc: "au-syd2",
         flag: "🇦🇺",

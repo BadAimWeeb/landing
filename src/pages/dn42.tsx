@@ -169,7 +169,7 @@ const NodeTables = [
         lon: -118.408056,
         endpoint: "us-lax1.rc.badaimweeb.me",
         ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
+        ipv6: IPAvailability.Yes,
         notes: null
     },
     {

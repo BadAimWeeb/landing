@@ -670,7 +670,7 @@ export default function PageDN42() {
         }
     }, [toggleTopology, toggleTopologyReverse]);
 
-    const [sortBy, setSortBy] = useState<"sc" | "rc">("sc");
+    const [sortBy, setSortBy] = useState<"sc" | "rc">("rc");
     const [sortDirection, setSortDirection] = useState<1 | -1>(1);
 
     const handleSortChange = useCallback((sort: typeof sortBy) => {

@@ -338,6 +338,17 @@ const NodeTables = [
         notes: "Non-permanent node."
     },
     {
+        sc: "D03",
+        rc: "au-syd3",
+        flag: "🇦🇺",
+        lat: -33.946111,
+        lon: 151.177222,
+        endpoint: "au-syd3.rc.badaimweeb.me",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.No,
+        notes: "Non-permanent node."
+    },
+    {
         sc: "D04",
         rc: "sg-sin2",
         flag: "🇸🇬",
@@ -715,9 +726,30 @@ export default function PageDN42() {
                     <div className={cls.Content}>
                         <Text size="2" color="gray">
                             I run a various of services on dn42. This page will serve as a hub for my dn42-related stuff.<br />
+                            <br /><br />
+                            My AS follows these well-known BGP community:
+                            <ul>
+                                <li><Link href="https://www.iana.org/go/rfc1997">NO_EXPORT</Link> (65535:65281)</li>
+                                <li><Link href="https://www.iana.org/go/rfc1997">NO_ADVERTISE</Link> (65535:65282)</li>
+                                <li><Link href="https://www.iana.org/go/rfc1997">NO_EXPORT_SUBCONFED</Link> (65535:65283)</li>
+                                <li><Link href="https://www.iana.org/go/rfc8326">GRACEFUL_SHUTDOWN</Link> (65535:0)</li>
+                            </ul>
+                            My AS also includes informational large communities on the advertised routes:
+                            <ul>
+                                <li>
+                                    <b>(4242423797, 100, ABCD)</b>: routes learned by server code ABCD (AB corresponds to index in alphabet, 1 = "A")
+                                    <ul>
+                                        <li><i>For example: 306 corresponds to server code C06 (check table below)</i></li>
+                                    </ul>
+                                </li>
+                                <li><b>(4242423797, 101, 41..70)</b>: routes learned in server with this <Link href="https://dn42.dev/howto/BGP-communities#region">dn42 region</Link></li>
+                                <li><b>(4242423797, 102, x)</b>: routes learned in server with this <Link href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/all/all.csv">ISO 3166-1 numeric country code</Link></li>
+                            </ul>
+                            Hot-potato routing strategy is currently the only routing strategy used. (I'll try to implement cold-potato routing later)<br />
+                            <br /><br />
                             If you want to peer with me, I have a few requirements:<br />
                             <ul>
-                                <li>you must have a valid ASN and information in dn42 registry</li>
+                                <li>you must have a valid ASN and information in dn42 registry</li> 
                                 <li>your node must implement ROA checks</li>
                                 <li>your node must support IPv6</li>
                                 <li>your node should have a latency of &lt;= 20ms. in rare circumstances, i may allow for a higher latency peerings.</li>

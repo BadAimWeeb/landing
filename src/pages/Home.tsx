@@ -3,7 +3,7 @@ import cls from "./Home.module.scss";
 import Huohuo from "./../assets/images/huohuo.svg";
 import { Element } from 'react-scroll'
 import { Badge, Button, Card, Grid, Heading, IconButton, Link, Text, Tooltip } from "@radix-ui/themes";
-import { PiCodeDuotone, PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiMagicWandDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone } from "react-icons/pi";
+import { PiCodeDuotone, PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiMagicWandDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiTelegramLogoDuotone } from "react-icons/pi";
 import type { accentColors } from "@radix-ui/themes/props";
 
 type AccentColors = (typeof accentColors)[number];
@@ -35,6 +35,11 @@ const ListSocial = [
         name: "Email",
         icon: <PiEnvelopeDuotone size={25} />,
         url: "mailto:x@badaimweeb.me"
+    },
+    {
+        name: "Telegram",
+        icon: <PiTelegramLogoDuotone size={25} />,
+        url: "https://t.me/badaimweeb"
     },
     {
         name: "GitHub",

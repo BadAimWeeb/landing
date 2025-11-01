@@ -3,7 +3,7 @@ import cls from "./dn42.module.scss";
 import DN42 from "./../assets/images/dn42.svg?no-inline";
 import { Element } from 'react-scroll'
 import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex } from "@radix-ui/themes";
-import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone } from "react-icons/pi";
+import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone, PiTelegramLogoDuotone } from "react-icons/pi";
 import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
 import MarkerClusterGroup from "react-leaflet-cluster";
 import TextPath from 'react-leaflet-textpath';
@@ -434,14 +434,19 @@ const ListSocial = [
         url: "https://matrix.to/#/@badaimweeb:matrix.org"
     },
     {
-        name: "Discord",
-        icon: <PiDiscordLogoDuotone size={25} />,
-        url: "https://discord.gg/uF9gxYveek"
-    },
-    {
         name: "Email",
         icon: <PiEnvelopeDuotone size={25} />,
         url: "mailto:dn42@badaimweeb.me"
+    },
+    {
+        name: "Telegram",
+        icon: <PiTelegramLogoDuotone size={25} />,
+        url: "https://t.me/badaimweeb"
+    },
+    {
+        name: "Discord",
+        icon: <PiDiscordLogoDuotone size={25} />,
+        url: "https://discord.gg/uF9gxYveek"
     },
     {
         name: "GitHub",
@@ -469,6 +474,22 @@ const Services = [
             {
                 name: "dn42",
                 url: "https://lg.badaimweeb.dn42"
+            }
+        ]
+    },
+    {
+        image: "",
+        name: "FlapAlerted",
+        type: "",
+        description: "an instance of FlapAlerted by Kioubit",
+        buttons: [
+            {
+                name: "ext",
+                url: "https://dn42-fa.badaimweeb.me"
+            },
+            {
+                name: "dn42",
+                url: "https://fa.badaimweeb.dn42"
             }
         ]
     }
@@ -767,7 +788,8 @@ export default function PageDN42() {
                                 <li><b>(4242423797, 101, 41..70)</b>: routes learned in server with this <Link href="https://dn42.dev/howto/BGP-communities#region">dn42 region</Link></li>
                                 <li><b>(4242423797, 102, x)</b>: routes learned in server with this <Link href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/all/all.csv">ISO 3166-1 numeric country code</Link></li>
                             </ul>
-                            Hot-potato routing strategy is currently the only routing strategy used. (I'll try to implement cold-potato routing later)<br />
+                            Cold-potato routing is used if route contains dn42 region community and/or dn42 country community. Hot-potato routing is used otherwise.<br />
+                            Routes with AS_LENGTH &gt; 8 are rejected, as it usually indicates a zombie/ghost route (failed to withdraw routes down the chain).<br />
                             <br /><br />
                             If you want to peer with me, I have a few requirements:<br />
                             <ul>
@@ -779,7 +801,8 @@ export default function PageDN42() {
                                 <li>(optional) your node should have a public internet IP address. if not (or if you node have DDNS instead), please let me know.</li>
                                 <li>(optional) your node should have BFD enabled and configured.</li>
                             </ul>
-                            I prefer using WireGuard as the transport protocol, but I'm open to experimenting with other protocols. BUT, PLEASE DO NOT USE ZEROTIER.
+                            I prefer using WireGuard as the transport protocol, but I'm open to experimenting with other protocols.<br />
+                            To request peering, please contact me via one of the contact links below.
                         </Text>
                     </div>
                 </div>

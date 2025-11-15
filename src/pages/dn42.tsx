@@ -28,14 +28,28 @@ const ExtendedAirportTables = {
     "msp": [44.881944, -93.221667]
 }
 
-const NodeTables = [
+const NodeTables: {
+    sc: string;
+    rc: string;
+    flag: string;
+    lat: number;
+    lon: number;
+    endpoint: string;
+    dn42IPv4: string;
+    dn42IPv6: string;
+    ipv4: IPAvailability;
+    ipv6: IPAvailability;
+    notes: string | null;
+}[] = [
     {
         sc: "A00",
         rc: "vn-lth1",
         flag: "🇻🇳",
         lat: 10.772611,
         lon: 107.045278,
-        endpoint: "<contact>.rc.badaimweeb.me",
+        endpoint: "vn-lth1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.171",
+        dn42IPv6: "fd99:727:bad0:c00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Residental network."
@@ -47,9 +61,11 @@ const NodeTables = [
         lat: 10.772611,
         lon: 107.045278,
         endpoint: "vn-lth3.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.172",
+        dn42IPv6: "fd99:727:bad0:d00::1",
         ipv4: IPAvailability.NAT,
         ipv6: IPAvailability.Yes,
-        notes: "Residental network. Upstream is A00."
+        notes: "Residental network.\nUpstream is A00."
     },
     {
         sc: "A05",
@@ -58,9 +74,11 @@ const NodeTables = [
         lat: 10.772611,
         lon: 107.045278,
         endpoint: "vn-lth4.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.160",
+        dn42IPv6: "fd99:727:bad0:1200::1",
         ipv4: IPAvailability.NAT,
         ipv6: IPAvailability.Yes,
-        notes: "Residental network. Upstream is A00."
+        notes: "Residental network.\nUpstream is A00."
     },
     {
         sc: "A06",
@@ -69,9 +87,11 @@ const NodeTables = [
         lat: 10.772611,
         lon: 107.045278,
         endpoint: "vn-lth5.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.161",
+        dn42IPv6: "fd99:727:bad0:1300::1",
         ipv4: IPAvailability.NAT,
         ipv6: IPAvailability.Yes,
-        notes: "Residental network. Upstream is A00."
+        notes: "Residental network.\nUpstream is A00."
     },
     {
         sc: "C02",
@@ -80,6 +100,8 @@ const NodeTables = [
         lat: 32.896944,
         lon: -97.038056,
         endpoint: "us-dfw1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.161",
+        dn42IPv6: "fd99:727:bad0:200::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Tunnel,
         notes: null
@@ -91,6 +113,8 @@ const NodeTables = [
         lat: 41.978611,
         lon: -87.904722,
         endpoint: "us-ord1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.163",
+        dn42IPv6: "fd99:727:bad0:400::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Tunnel,
         notes: null
@@ -102,6 +126,8 @@ const NodeTables = [
         lat: 50.033333,
         lon: 8.570556,
         endpoint: "de-fra2.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.167",
+        dn42IPv6: "fd99:727:bad0:800::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.No,
         notes: "This node has slightly weak resources."
@@ -113,6 +139,8 @@ const NodeTables = [
         lat: 10.818889,
         lon: 106.651944,
         endpoint: "vn-sgn1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.165",
+        dn42IPv6: "fd99:727:bad0:600::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -124,6 +152,8 @@ const NodeTables = [
         lat: 1.640556,
         lon: 103.670278,
         endpoint: "my-jhb1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.162",
+        dn42IPv6: "fd99:727:bad0:300::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Singapore nodes can peer with this node."
@@ -135,6 +165,8 @@ const NodeTables = [
         lat: 21.213889,
         lon: 105.803056,
         endpoint: "vn-han1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.164",
+        dn42IPv6: "fd99:727:bad0:500::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -146,6 +178,8 @@ const NodeTables = [
         lat: 50.033333,
         lon: 8.570556,
         endpoint: "de-fra1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.166",
+        dn42IPv6: "fd99:727:bad0:700::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -157,6 +191,8 @@ const NodeTables = [
         lat: -33.946111,
         lon: 151.177222,
         endpoint: "au-syd1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.173",
+        dn42IPv6: "fd99:727:bad0:e00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -168,6 +204,8 @@ const NodeTables = [
         lat: 33.9425,
         lon: -118.408056,
         endpoint: "us-lax1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.180",
+        dn42IPv6: "fd99:727:bad0:1a00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -179,6 +217,8 @@ const NodeTables = [
         lat: -23.435556,
         lon: -46.473056,
         endpoint: "br-gru1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.181",
+        dn42IPv6: "fd99:727:bad0:1b00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Unmetered connection @ 300Mbps"
@@ -190,6 +230,8 @@ const NodeTables = [
         lat: 22.308889,
         lon: 113.914444,
         endpoint: "hk-hkg1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.182",
+        dn42IPv6: "fd99:727:bad0:1c00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -201,6 +243,8 @@ const NodeTables = [
         lat: 27.979722,
         lon: -82.534722,
         endpoint: "us-tpa1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.183",
+        dn42IPv6: "fd99:727:bad0:1d00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -212,6 +256,8 @@ const NodeTables = [
         lat: 25.076389,
         lon: 121.223889,
         endpoint: "tw-tpe1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.184",
+        dn42IPv6: "fd99:727:bad0:1e00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -223,6 +269,8 @@ const NodeTables = [
         lat: 35.553333,
         lon: 139.781111,
         endpoint: "jp-hnd1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.186",
+        dn42IPv6: "fd99:727:bad0:2000::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -234,6 +282,8 @@ const NodeTables = [
         lat: -9.046778,
         lon: 13.507194,
         endpoint: "ao-nbj1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.187",
+        dn42IPv6: "fd99:727:bad0:2100::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.No,
         notes: null
@@ -245,6 +295,8 @@ const NodeTables = [
         lat: 37.362778,
         lon: -121.929167,
         endpoint: "us-sjc1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.188",
+        dn42IPv6: "fd99:727:bad0:2200::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Unmetered connection @ 1Gbps"
@@ -256,6 +308,8 @@ const NodeTables = [
         lat: 51.4775,
         lon: -0.461389,
         endpoint: "gb-lhr1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.189",
+        dn42IPv6: "fd99:727:bad0:2300::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.No,
         notes: "Unmetered connection @ 10Gbps"
@@ -267,6 +321,8 @@ const NodeTables = [
         lat: 40.639722,
         lon: -73.778889,
         endpoint: "us-jfk1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.190",
+        dn42IPv6: "fd99:727:bad0:2400::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Unmetered connection @ 10Gbps"
@@ -278,6 +334,8 @@ const NodeTables = [
         lat: 55.0125,
         lon: 82.650556,
         endpoint: "ru-ovb1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.172",
+        dn42IPv6: "fd99:727:bad0:2500::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Unmetered connection @ 300Mbps"
@@ -289,6 +347,8 @@ const NodeTables = [
         lat: 19.088611,
         lon: 72.868056,
         endpoint: "in-bom1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.173",
+        dn42IPv6: "fd99:727:bad0:2600::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.No,
         notes: null
@@ -300,6 +360,8 @@ const NodeTables = [
         lat: 39.2975,
         lon: -94.713889,
         endpoint: "us-mci1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.174",
+        dn42IPv6: "fd99:727:bad0:2700::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Unmetered connection @ 1Gbps"
@@ -311,6 +373,8 @@ const NodeTables = [
         lat: -37.673333,
         lon: 144.843333,
         endpoint: "au-mel1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.175",
+        dn42IPv6: "fd99:727:bad0:2800::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -322,6 +386,8 @@ const NodeTables = [
         lat: 55.972778, 
         lon: 37.414722,
         endpoint: "ru-svo1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.187",
+        dn42IPv6: "fd99:727:bad0:2900::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Unmetered connection @ 300Mbps"
@@ -333,6 +399,8 @@ const NodeTables = [
         lat: 43.676111,
         lon: -79.630556,
         endpoint: "ca-yyz1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.188",
+        dn42IPv6: "fd99:727:bad0:2a00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: null
@@ -344,6 +412,8 @@ const NodeTables = [
         lat: -33.946111,
         lon: 151.177222,
         endpoint: "au-syd2.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.164",
+        dn42IPv6: "fd99:727:bad0:f00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.No,
         notes: "Non-permanent node."
@@ -355,6 +425,8 @@ const NodeTables = [
         lat: 33.9425,
         lon: -118.408056,
         endpoint: "us-lax2.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.165",
+        dn42IPv6: "fd99:727:bad0:1000::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Non-permanent node."
@@ -366,6 +438,8 @@ const NodeTables = [
         lat: -33.946111,
         lon: 151.177222,
         endpoint: "au-syd3.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.166",
+        dn42IPv6: "fd99:727:bad0:1100::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.No,
         notes: "Non-permanent node."
@@ -377,6 +451,34 @@ const NodeTables = [
         lat: 1.359167,
         lon: 103.989444,
         endpoint: "sg-sin2.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.176",
+        dn42IPv6: "fd99:727:bad0:1600::1",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: "Non-permanent node."
+    },
+    {
+        sc: "D05",
+        rc: "id-cgk2",
+        flag: "🇮🇩",
+        lat: -6.125556,
+        lon: 106.655833,
+        endpoint: "id-cgk2.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.177",
+        dn42IPv6: "fd99:727:bad0:1700::1",
+        ipv4: IPAvailability.Yes,
+        ipv6: IPAvailability.Yes,
+        notes: "Non-permanent node."
+    },
+    {
+        sc: "D06",
+        rc: "sg-sin3",
+        flag: "🇸🇬",
+        lat: 1.359167,
+        lon: 103.989444,
+        endpoint: "sg-sin3.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.178",
+        dn42IPv6: "fd99:727:bad0:1800::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
         notes: "Non-permanent node."
@@ -388,6 +490,8 @@ const NodeTables = [
         lat: 10.818889,
         lon: 106.651944,
         endpoint: "vn-sgn2.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.160",
+        dn42IPv6: "fd99:727:bad0:100::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.No,
         notes: null
@@ -399,9 +503,11 @@ const NodeTables = [
         lat: 44.881944,
         lon: -93.221667,
         endpoint: "<contact>.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.162",
+        dn42IPv6: "fd99:727:bad0:1400::1",
         ipv4: IPAvailability.NAT,
         ipv6: IPAvailability.Yes,
-        notes: "Residental network. This node may not be used as transit to other AS since it has low upload/download speed. Dual upstream T-Mobile 5G & Comcast @ G99."
+        notes: "Residental network.\nMay not be used as transit to other AS (low speed).\nDual upstream T-Mobile 5G & Comcast @ G99."
     },
     {
         sc: "G99",
@@ -410,9 +516,11 @@ const NodeTables = [
         lat: 44.881944,
         lon: -93.221667,
         endpoint: "<contact>.rc.badaimweeb.me",
+        dn42IPv4: "172.22.130.169",
+        dn42IPv6: "fd99:727:bad0:a00::1",
         ipv4: IPAvailability.Yes,
         ipv6: IPAvailability.Yes,
-        notes: "Residental network. This node may not be used as transit to other AS since it has low upload/download speed."
+        notes: "Residental network.\nMay not be used as transit to other AS (low speed)."
     },
     {
         sc: "H01",
@@ -421,9 +529,11 @@ const NodeTables = [
         lat: 16.043889,
         lon: 108.199444,
         endpoint: "vn-dad1.rc.badaimweeb.me",
+        dn42IPv4: "172.22.142.185",
+        dn42IPv6: "fd99:727:bad0:1f00::1",
         ipv4: IPAvailability.NAT,
         ipv6: IPAvailability.Yes,
-        notes: "Residental network. Operated by MICHIOXD-MNT, you can also peer with him :)"
+        notes: "Residental network.\nOperated by MICHIOXD-MNT, you can also peer with him :)"
     }
 ];
 
@@ -490,6 +600,22 @@ const Services = [
             {
                 name: "dn42",
                 url: "https://fa.badaimweeb.dn42"
+            }
+        ]
+    },
+    {
+        image: "",
+        name: "Anycast IP",
+        type: "",
+        description: "pingable anycast IP for testing connectivity",
+        buttons: [
+            {
+                name: "dn42 ipv4",
+                url: "http://172.22.130.175"
+            },
+            {
+                name: "dn42 ipv6",
+                url: "http://[fd99:727:bad0:f000::]"
             }
         ]
     }
@@ -860,6 +986,9 @@ export default function PageDN42() {
                                             Endpoint: <code>{node.endpoint}</code><br />
                                             IPv4: <Badge size="2" variant="solid" color={node.ipv4 === IPAvailability.Yes ? "green" : node.ipv4 === IPAvailability.No ? "red" : "yellow"}>{node.ipv4}</Badge>&nbsp;/&nbsp;
                                             IPv6: <Badge size="2" variant="solid" color={node.ipv6 === IPAvailability.Yes ? "green" : node.ipv6 === IPAvailability.No ? "red" : "yellow"}>{node.ipv6}</Badge><br />
+                                            <br />
+                                            DN42 IPv4: <code>{node.dn42IPv4}</code><br />
+                                            DN42 IPv6: <code>{node.dn42IPv6}</code><br />
                                             {node.notes && (<><br />Notes: {node.notes}</>)}
                                         </MapPopup>
                                     </Marker>
@@ -956,6 +1085,7 @@ export default function PageDN42() {
                                             <Table.ColumnHeaderCell>IPv4</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell>IPv6</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell>Endpoint</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell>DN42 IP</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell>Notes</Table.ColumnHeaderCell>
                                         </Table.Row>
                                     </Table.Header>
@@ -975,7 +1105,10 @@ export default function PageDN42() {
                                                 <Table.Cell>{node.ipv4}</Table.Cell>
                                                 <Table.Cell>{node.ipv6}</Table.Cell>
                                                 <Table.Cell><code>{node.endpoint}</code></Table.Cell>
-                                                <Table.Cell>{node.notes}</Table.Cell>
+                                                <Table.Cell><code>{node.dn42IPv4}</code><br /><code>{node.dn42IPv6}</code></Table.Cell>
+                                                <Table.Cell style={{
+                                                    whiteSpace: "pre-wrap"
+                                                }}>{node.notes}</Table.Cell>
                                             </Table.Row>
                                         ))}
                                     </Table.Body>

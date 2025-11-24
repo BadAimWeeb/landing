@@ -432,19 +432,6 @@ const NodeTables: {
         notes: null
     },
     {
-        sc: "C28",
-        rc: "ca-yyz1",
-        flag: "🇨🇦",
-        lat: 43.676111,
-        lon: -79.630556,
-        endpoint: "ca-yyz1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.188",
-        dn42IPv6: "fd99:727:bad0:2a00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
         sc: "D01",
         rc: "au-syd2",
         flag: "🇦🇺",

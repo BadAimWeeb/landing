@@ -2,7 +2,7 @@ import { ParallaxBanner } from "react-scroll-parallax";
 import cls from "./dn42.module.scss";
 import DN42 from "./../assets/images/dn42.svg?no-inline";
 import { Element } from 'react-scroll'
-import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex } from "@radix-ui/themes";
+import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex, Dialog } from "@radix-ui/themes";
 import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone, PiTelegramLogoDuotone } from "react-icons/pi";
 import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -16,591 +16,9 @@ import MarkerShadow from "leaflet/dist/images/marker-shadow.png";
 import { FullscreenControl } from "react-leaflet-fullscreen";
 
 import "react-leaflet-fullscreen/styles.css";
+import { NodeTables, ExtendedAirportTables, IPAvailability } from "../components/NodeTables";
 
-enum IPAvailability {
-    No = "No",
-    NAT = "NAT",
-    Tunnel = "Tunnel",
-    Yes = "Yes"
-}
-
-const ExtendedAirportTables = {
-    "msp": [44.881944, -93.221667]
-}
-
-const NodeTables: {
-    sc: string;
-    rc: string;
-    flag: string;
-    lat: number;
-    lon: number;
-    endpoint: string;
-    dn42IPv4: string;
-    dn42IPv6: string;
-    ipv4: IPAvailability;
-    ipv6: IPAvailability;
-    notes: string | null;
-}[] = [
-    {
-        sc: "A00",
-        rc: "vn-lth1",
-        flag: "🇻🇳",
-        lat: 10.772611,
-        lon: 107.045278,
-        endpoint: "vn-lth1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.171",
-        dn42IPv6: "fd99:727:bad0:c00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Residental network."
-    },
-    {
-        sc: "A04",
-        rc: "vn-lth3",
-        flag: "🇻🇳",
-        lat: 10.772611,
-        lon: 107.045278,
-        endpoint: "vn-lth3.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.172",
-        dn42IPv6: "fd99:727:bad0:d00::1",
-        ipv4: IPAvailability.NAT,
-        ipv6: IPAvailability.Yes,
-        notes: "Residental network.\nUpstream is A00."
-    },
-    {
-        sc: "A05",
-        rc: "vn-lth4",
-        flag: "🇻🇳",
-        lat: 10.772611,
-        lon: 107.045278,
-        endpoint: "vn-lth4.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.160",
-        dn42IPv6: "fd99:727:bad0:1200::1",
-        ipv4: IPAvailability.NAT,
-        ipv6: IPAvailability.Yes,
-        notes: "Residental network.\nUpstream is A00."
-    },
-    {
-        sc: "A06",
-        rc: "vn-lth5",
-        flag: "🇻🇳",
-        lat: 10.772611,
-        lon: 107.045278,
-        endpoint: "vn-lth5.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.161",
-        dn42IPv6: "fd99:727:bad0:1300::1",
-        ipv4: IPAvailability.NAT,
-        ipv6: IPAvailability.Yes,
-        notes: "Residental network.\nUpstream is A00."
-    },
-    {
-        sc: "C02",
-        rc: "us-dfw1",
-        flag: "🇺🇸",
-        lat: 32.896944,
-        lon: -97.038056,
-        endpoint: "us-dfw1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.161",
-        dn42IPv6: "fd99:727:bad0:200::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Tunnel,
-        notes: null
-    },
-    {
-        sc: "C04",
-        rc: "us-ord1",
-        flag: "🇺🇸",
-        lat: 41.978611,
-        lon: -87.904722,
-        endpoint: "us-ord1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.163",
-        dn42IPv6: "fd99:727:bad0:400::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Tunnel,
-        notes: null
-    },
-    {
-        sc: "C05",
-        rc: "de-fra2",
-        flag: "🇩🇪",
-        lat: 50.033333,
-        lon: 8.570556,
-        endpoint: "de-fra2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.167",
-        dn42IPv6: "fd99:727:bad0:800::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
-        notes: "This node has slightly weak resources."
-    },
-    {
-        sc: "C06",
-        rc: "vn-sgn1",
-        flag: "🇻🇳",
-        lat: 10.818889,
-        lon: 106.651944,
-        endpoint: "vn-sgn1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.165",
-        dn42IPv6: "fd99:727:bad0:600::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C07",
-        rc: "my-jhb1",
-        flag: "🇲🇾",
-        lat: 1.640556,
-        lon: 103.670278,
-        endpoint: "my-jhb1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.162",
-        dn42IPv6: "fd99:727:bad0:300::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Singapore nodes can peer with this node."
-    },
-    {
-        sc: "C08",
-        rc: "vn-han1",
-        flag: "🇻🇳",
-        lat: 21.213889,
-        lon: 105.803056,
-        endpoint: "vn-han1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.164",
-        dn42IPv6: "fd99:727:bad0:500::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C09",
-        rc: "de-fra1",
-        flag: "🇩🇪",
-        lat: 50.033333,
-        lon: 8.570556,
-        endpoint: "de-fra1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.166",
-        dn42IPv6: "fd99:727:bad0:700::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C10",
-        rc: "au-syd1",
-        flag: "🇦🇺",
-        lat: -33.946111,
-        lon: 151.177222,
-        endpoint: "au-syd1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.173",
-        dn42IPv6: "fd99:727:bad0:e00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C11",
-        rc: "us-lax1",
-        flag: "🇺🇸",
-        lat: 33.9425,
-        lon: -118.408056,
-        endpoint: "us-lax1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.180",
-        dn42IPv6: "fd99:727:bad0:1a00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C12",
-        rc: "br-gru1",
-        flag: "🇧🇷",
-        lat: -23.435556,
-        lon: -46.473056,
-        endpoint: "br-gru1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.181",
-        dn42IPv6: "fd99:727:bad0:1b00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Unmetered connection @ 300Mbps"
-    },
-    {
-        sc: "C13",
-        rc: "hk-hkg1",
-        flag: "🇭🇰",
-        lat: 22.308889,
-        lon: 113.914444,
-        endpoint: "hk-hkg1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.182",
-        dn42IPv6: "fd99:727:bad0:1c00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C14",
-        rc: "us-tpa1",
-        flag: "🇺🇸",
-        lat: 27.979722,
-        lon: -82.534722,
-        endpoint: "us-tpa1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.183",
-        dn42IPv6: "fd99:727:bad0:1d00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C15",
-        rc: "tw-tpe1",
-        flag: "🇹🇼",
-        lat: 25.076389,
-        lon: 121.223889,
-        endpoint: "tw-tpe1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.184",
-        dn42IPv6: "fd99:727:bad0:1e00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C16",
-        rc: "jp-hnd1",
-        flag: "🇯🇵",
-        lat: 35.553333,
-        lon: 139.781111,
-        endpoint: "jp-hnd1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.186",
-        dn42IPv6: "fd99:727:bad0:2000::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C17",
-        rc: "ao-nbj1",
-        flag: "🇦🇴",
-        lat: -9.046778,
-        lon: 13.507194,
-        endpoint: "ao-nbj1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.187",
-        dn42IPv6: "fd99:727:bad0:2100::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
-        notes: null
-    },
-    {
-        sc: "C18",
-        rc: "us-sjc1",
-        flag: "🇺🇸",
-        lat: 37.362778,
-        lon: -121.929167,
-        endpoint: "us-sjc1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.188",
-        dn42IPv6: "fd99:727:bad0:2200::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Unmetered connection @ 1Gbps"
-    },
-    {
-        sc: "C19",
-        rc: "gb-lhr1",
-        flag: "🇬🇧",
-        lat: 51.4775,
-        lon: -0.461389,
-        endpoint: "gb-lhr1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.189",
-        dn42IPv6: "fd99:727:bad0:2300::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
-        notes: "Unmetered connection @ 10Gbps"
-    },
-    {
-        sc: "C20",
-        rc: "us-jfk1",
-        flag: "🇺🇸",
-        lat: 40.639722,
-        lon: -73.778889,
-        endpoint: "us-jfk1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.190",
-        dn42IPv6: "fd99:727:bad0:2400::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Unmetered connection @ 10Gbps"
-    },
-    {
-        sc: "C21",
-        rc: "ru-ovb1",
-        flag: "🇷🇺",
-        lat: 55.0125,
-        lon: 82.650556,
-        endpoint: "ru-ovb1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.172",
-        dn42IPv6: "fd99:727:bad0:2500::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Unmetered connection @ 300Mbps"
-    },
-    {
-        sc: "C22",
-        rc: "in-bom1",
-        flag: "🇮🇳",
-        lat: 19.088611,
-        lon: 72.868056,
-        endpoint: "in-bom1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.173",
-        dn42IPv6: "fd99:727:bad0:2600::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
-        notes: null
-    },
-    {
-        sc: "C23",
-        rc: "us-mci1",
-        flag: "🇺🇸",
-        lat: 39.2975,
-        lon: -94.713889,
-        endpoint: "us-mci1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.174",
-        dn42IPv6: "fd99:727:bad0:2700::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Unmetered connection @ 1Gbps"
-    },
-    {
-        sc: "C24",
-        rc: "au-mel1",
-        flag: "🇦🇺",
-        lat: -37.673333,
-        lon: 144.843333,
-        endpoint: "au-mel1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.175",
-        dn42IPv6: "fd99:727:bad0:2800::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C25",
-        rc: "ru-svo1",
-        flag: "🇷🇺",
-        lat: 55.972778, 
-        lon: 37.414722,
-        endpoint: "ru-svo1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.187",
-        dn42IPv6: "fd99:727:bad0:2900::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Unmetered connection @ 300Mbps"
-    },
-    {
-        sc: "C26",
-        rc: "ca-yyz1",
-        flag: "🇨🇦",
-        lat: 43.676111,
-        lon: -79.630556,
-        endpoint: "ca-yyz1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.188",
-        dn42IPv6: "fd99:727:bad0:2a00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C27",
-        rc: "pl-gdn1",
-        flag: "🇵🇱",
-        lat: 54.3775,
-        lon: 18.466111,
-        endpoint: "pl-gdn1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.132",
-        dn42IPv6: "fd99:727:bad0:3000::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "C28",
-        rc: "us-sea1",
-        flag: "🇺🇸",
-        lat: 47.448889,
-        lon: -122.309444,
-        endpoint: "us-sea1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.133",
-        dn42IPv6: "fd99:727:bad0:3100::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: null
-    },
-    {
-        sc: "D01",
-        rc: "au-syd2",
-        flag: "🇦🇺",
-        lat: -33.946111,
-        lon: 151.177222,
-        endpoint: "au-syd2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.164",
-        dn42IPv6: "fd99:727:bad0:f00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D02",
-        rc: "us-lax2",
-        flag: "🇺🇸",
-        lat: 33.9425,
-        lon: -118.408056,
-        endpoint: "us-lax2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.165",
-        dn42IPv6: "fd99:727:bad0:1000::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D03",
-        rc: "au-syd3",
-        flag: "🇦🇺",
-        lat: -33.946111,
-        lon: 151.177222,
-        endpoint: "au-syd3.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.166",
-        dn42IPv6: "fd99:727:bad0:1100::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D04",
-        rc: "sg-sin2",
-        flag: "🇸🇬",
-        lat: 1.359167,
-        lon: 103.989444,
-        endpoint: "sg-sin2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.176",
-        dn42IPv6: "fd99:727:bad0:1600::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D05",
-        rc: "id-cgk2",
-        flag: "🇮🇩",
-        lat: -6.125556,
-        lon: 106.655833,
-        endpoint: "id-cgk2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.177",
-        dn42IPv6: "fd99:727:bad0:1700::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D06",
-        rc: "sg-sin3",
-        flag: "🇸🇬",
-        lat: 1.359167,
-        lon: 103.989444,
-        endpoint: "sg-sin3.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.178",
-        dn42IPv6: "fd99:727:bad0:1800::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D08",
-        rc: "sg-sin4",
-        flag: "🇸🇬",
-        lat: 1.359167,
-        lon: 103.989444,
-        endpoint: "sg-sin4.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.128",
-        dn42IPv6: "fd99:727:bad0:2c00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D09",
-        rc: "us-atl2",
-        flag: "🇺🇸",
-        lat: 33.636667,
-        lon: -84.428056,
-        endpoint: "us-atl2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.129",
-        dn42IPv6: "fd99:727:bad0:2d00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "D10",
-        rc: "in-blr2",
-        flag: "🇮🇳",
-        lat: 13.198889,
-        lon: 77.705556,
-        endpoint: "in-blr2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.130",
-        dn42IPv6: "fd99:727:bad0:2e00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Non-permanent node."
-    },
-    {
-        sc: "E03",
-        rc: "vn-sgn2",
-        flag: "🇻🇳",
-        lat: 10.818889,
-        lon: 106.651944,
-        endpoint: "vn-sgn2.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.160",
-        dn42IPv6: "fd99:727:bad0:100::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.No,
-        notes: null
-    },
-    {
-        sc: "G00",
-        rc: "us-msp3",
-        flag: "🇺🇸",
-        lat: 44.881944,
-        lon: -93.221667,
-        endpoint: "<contact>.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.162",
-        dn42IPv6: "fd99:727:bad0:1400::1",
-        ipv4: IPAvailability.NAT,
-        ipv6: IPAvailability.Yes,
-        notes: "Residental network.\nMay not be used as transit to other AS (low speed).\nDual upstream T-Mobile 5G & Comcast @ G99."
-    },
-    {
-        sc: "G99",
-        rc: "us-msp1",
-        flag: "🇺🇸",
-        lat: 44.881944,
-        lon: -93.221667,
-        endpoint: "<contact>.rc.badaimweeb.me",
-        dn42IPv4: "172.22.130.169",
-        dn42IPv6: "fd99:727:bad0:a00::1",
-        ipv4: IPAvailability.Yes,
-        ipv6: IPAvailability.Yes,
-        notes: "Residental network.\nMay not be used as transit to other AS (low speed)."
-    },
-    {
-        sc: "H01",
-        rc: "vn-dad1",
-        flag: "🇻🇳",
-        lat: 16.043889,
-        lon: 108.199444,
-        endpoint: "vn-dad1.rc.badaimweeb.me",
-        dn42IPv4: "172.22.142.185",
-        dn42IPv6: "fd99:727:bad0:1f00::1",
-        ipv4: IPAvailability.NAT,
-        ipv6: IPAvailability.Yes,
-        notes: "Residental network.\nOperated by MICHIOXD-MNT, you can also peer with him :)"
-    }
-];
+import { CountryToContinent } from "../components/CountryToContinent";
 
 const ListSocial = [
     {
@@ -780,7 +198,7 @@ export default function PageDN42() {
 
                                 paths[current + "-" + target] = [currentNodeCoords, [targetNodeCoords[0], targetNodeCoords[1] + furtherMirrorShift], Math.ceil(latency) + "ms"];
                             }
-                            
+
                             return;
                         }
                         case "string": {
@@ -850,7 +268,7 @@ export default function PageDN42() {
 
             const revNodeCoords = getCoords(revNode, topology);
             if (!revNodeCoords) continue;
-            
+
             const nextHopOrLatency = topology.topology[revNode].find(x => x[0] === currentNodeSelected)?.[1];
             if (!nextHopOrLatency) continue;
 
@@ -900,20 +318,18 @@ export default function PageDN42() {
     }, [topology, toggleTopology, toggleTopologyReverse, currentNodeSelected]);
 
     useEffect(() => {
-        if (toggleTopology || toggleTopologyReverse) {
-            function fetchTopology() {
-                fetch("https://lambda-landing.badaimweeb.me/topology")
-                    .then(res => res.json())
-                    .then(data => setTopology(data))
-                    .catch(() => { });
-            }
-
-            fetchTopology();
-            fetchTopology();
-            const interval = setInterval(fetchTopology, 25 * 1000);
-            return () => clearInterval(interval);
+        function fetchTopology() {
+            fetch("https://lambda-landing.badaimweeb.me/topology")
+                .then(res => res.json())
+                .then(data => setTopology(data))
+                .catch(() => { });
         }
-    }, [toggleTopology, toggleTopologyReverse]);
+
+        fetchTopology();
+        fetchTopology();
+        const interval = setInterval(fetchTopology, 25 * 1000);
+        return () => clearInterval(interval);
+    }, []);
 
     const [sortBy, setSortBy] = useState<"sc" | "rc">("rc");
     const [sortDirection, setSortDirection] = useState<1 | -1>(1);
@@ -925,6 +341,95 @@ export default function PageDN42() {
             setSortBy(sort);
         }
     }, [sortBy, setSortBy, setSortDirection]);
+
+    const cacheLatencyTable = useMemo(() => {
+        if (!topology) return "Loading...";
+
+        const nt = NodeTables.slice().sort((a, b) => CountryToContinent[a.rc.slice(0, 2).toLocaleUpperCase()]?.localeCompare(CountryToContinent[b.rc.slice(0, 2).toLocaleUpperCase()]) || a.rc.localeCompare(b.rc));
+
+        return <Table.Root>
+            <Table.Header>
+                <Table.Row>
+                    <Table.ColumnHeaderCell style={{ whiteSpace: "nowrap", position: "sticky", top: 0 }}>From \ To</Table.ColumnHeaderCell>
+                    {nt.map((node, index) => (
+                        <Table.ColumnHeaderCell key={index} style={{ whiteSpace: "nowrap", position: "sticky", top: 0 }}>{node.rc}</Table.ColumnHeaderCell>
+                    ))}
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {nt.map((fromNode, rowIndex) => (
+                    <Table.Row key={rowIndex}>
+                        <Table.Cell style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>{fromNode.rc}</Table.Cell>
+                        {nt.map((toNode) => {
+                            if (fromNode.sc === toNode.sc) {
+                                return <Table.Cell key={fromNode.sc} style={{ backgroundColor: "#444444" }}>-</Table.Cell>;
+                            } else {
+                                const hop: [String, number][] = [];
+                                let latency = 0;
+
+                                let nextHop = fromNode.sc;
+                                for (; ;) {
+                                    const entry = topology?.topology[nextHop].find(x => x[0] === toNode.sc);
+                                    if (!entry) {
+                                        hop.push(["×(no path)", 0]);
+                                        latency = 0;
+                                        break;
+                                    }
+
+                                    let loopBreak = false;
+                                    let value = entry[1];
+                                    switch (typeof value) {
+                                        case "number": {
+                                            latency += value;
+                                            loopBreak = true;
+                                            break;
+                                        }
+
+                                        case "string": {
+                                            let lat = topology?.topology[nextHop].find(x => x[0] === value)?.[1];
+                                            if (typeof lat === "string") {
+                                                value = lat;
+                                                console.log("Indirect next hop detected in latency table calculation:", fromNode.sc, "to", toNode.sc, topology?.topology[nextHop]);
+                                                lat = topology?.topology[nextHop].find(x => x[0] === value)?.[1];
+                                            }
+                                            latency += lat as number || 0;
+                                            nextHop = value;
+                                            if (hop.find(x => x[0] === nextHop)) {
+                                                hop.push(["×(loop)", 0]);
+                                                latency = 0;
+                                                loopBreak = true;
+                                                break;
+                                            }
+                                            hop.push([value, Math.round((lat as number || 0) * 10) / 10]);
+                                            loopBreak = false;
+                                            break;
+                                        }
+
+                                        default:
+                                            hop.push(["×(invalid)", 0]);
+                                            latency = 0;
+                                            console.log("Invalid next hop type in latency table calculation:", fromNode.sc, "to", toNode.sc, topology?.topology[nextHop], value);
+                                            loopBreak = true;
+                                            break;
+                                    }
+
+                                    if (loopBreak) break;
+                                }
+
+                                return <Table.Cell key={fromNode.sc + "-" + toNode.sc} style={{ whiteSpace: "nowrap", color: latency > 150 ? "#ff6b6b" : latency > 50 ? "#ffd93d" : latency > 0 ? "#8aff7f" : "inherit" }}>
+                                    <Tooltip content={hop.length ? "via " + hop.map(x => x[0] + " (" + x[1] + "ms)").join(" hop ") : "direct"}>
+                                        <div>
+                                            {latency > 0 ? Math.ceil(latency) + "ms" : "N/A"}
+                                        </div>
+                                    </Tooltip>
+                                </Table.Cell>;
+                            }
+                        })}
+                    </Table.Row>
+                ))}
+            </Table.Body>
+        </Table.Root>;
+    }, [topology]);
 
     return (
         <div className={cls.HomePage}>
@@ -984,7 +489,7 @@ export default function PageDN42() {
                             <br /><br />
                             If you want to peer with me, I have a few requirements:<br />
                             <ul>
-                                <li>you must have a valid ASN and information in dn42 registry</li> 
+                                <li>you must have a valid ASN and information in dn42 registry</li>
                                 <li>your node must implement ROA checks</li>
                                 <li>your node must support IPv6</li>
                                 <li>your node should have a latency of &lt;= 20ms. in rare circumstances, i may allow for a higher latency peerings.</li>
@@ -1139,7 +644,7 @@ export default function PageDN42() {
                             {!!currentNodeSelected && <><br /><Text size="2" color="gray">Currently viewing topology for <strong>{currentNodeRCSelected}</strong> ({currentNodeSelected}). <Link href="#bruh" onClick={() => setCurrentNodeSelected(null)}>Clear selection</Link></Text></>}
                         </div>}
                         <br />
-                        <Link href="#bruh" onClick={() => setOpenTable(x => !x)}>{!openTable ? "or view a table of nodes instead..." : "close table"}</Link>
+                        <Link href="#bruh" onClick={() => setOpenTable(x => !x)}>{!openTable ? "or view a table of nodes instead..." : "close node list table"}</Link>
                         {openTable && (
                             <div className={cls.TableWrapper}>
                                 <Table.Root>
@@ -1164,22 +669,38 @@ export default function PageDN42() {
                                                 return 0;
                                             })
                                             .map((node, index) => (
-                                            <Table.Row key={index}>
-                                                <Table.Cell>{node.sc}</Table.Cell>
-                                                <Table.Cell>{node.rc}</Table.Cell>
-                                                <Table.Cell>{node.ipv4}</Table.Cell>
-                                                <Table.Cell>{node.ipv6}</Table.Cell>
-                                                <Table.Cell><code>{node.endpoint}</code></Table.Cell>
-                                                <Table.Cell><code>{node.dn42IPv4}</code><br /><code>{node.dn42IPv6}</code></Table.Cell>
-                                                <Table.Cell style={{
-                                                    whiteSpace: "pre-wrap"
-                                                }}>{node.notes}</Table.Cell>
-                                            </Table.Row>
-                                        ))}
+                                                <Table.Row key={index}>
+                                                    <Table.Cell>{node.sc}</Table.Cell>
+                                                    <Table.Cell>{node.rc}</Table.Cell>
+                                                    <Table.Cell>{node.ipv4}</Table.Cell>
+                                                    <Table.Cell>{node.ipv6}</Table.Cell>
+                                                    <Table.Cell><code>{node.endpoint}</code></Table.Cell>
+                                                    <Table.Cell><code>{node.dn42IPv4}</code><br /><code>{node.dn42IPv6}</code></Table.Cell>
+                                                    <Table.Cell style={{
+                                                        whiteSpace: "pre-wrap"
+                                                    }}>{node.notes}</Table.Cell>
+                                                </Table.Row>
+                                            ))}
                                     </Table.Body>
                                 </Table.Root>
                             </div>
                         )}
+                        <br />
+                        <br />
+                        <Dialog.Root>
+                            <Dialog.Trigger>
+                                <Link href="#bruh2">view latency table</Link>
+                            </Dialog.Trigger>
+                            <Dialog.Content maxWidth="90vw">
+                                <Dialog.Title>Latency Table</Dialog.Title>
+
+                                <div style={{ maxHeight: "80vh", overflowY: "auto" }}>
+                                    <div style={{ padding: 16, width: "fit-content" }}>
+                                        {cacheLatencyTable}
+                                    </div>
+                                </div>
+                            </Dialog.Content>
+                        </Dialog.Root>
                     </div>
                 </div>
             </Element>

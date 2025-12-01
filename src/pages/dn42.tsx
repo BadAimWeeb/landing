@@ -395,7 +395,7 @@ export default function PageDN42() {
                                             latency += lat as number || 0;
                                             nextHop = value;
                                             if (hop.find(x => x[0] === nextHop)) {
-                                                hop.push(["×(loop)", 0]);
+                                                hop.push(["×(loop - " + nextHop + ")", 0]);
                                                 latency = 0;
                                                 loopBreak = true;
                                                 break;

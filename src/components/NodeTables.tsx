@@ -77,15 +77,15 @@ export const NodeTables: {
         },
         {
             sc: "C02",
-            rc: "us-dfw1",
+            rc: "us-slc1",
             flag: "🇺🇸",
-            lat: 32.896944,
-            lon: -97.038056,
-            endpoint: "us-dfw1.rc.badaimweeb.me",
+            lat: 40.788333,
+            lon: -111.977778,
+            endpoint: "us-slc1.rc.badaimweeb.me",
             dn42IPv4: "172.22.130.161",
             dn42IPv6: "fd99:727:bad0:200::1",
             ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Tunnel,
+            ipv6: IPAvailability.Yes,
             notes: null
         },
         {

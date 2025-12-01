@@ -423,7 +423,7 @@ export const NodeTables: {
             dn42IPv4: "172.22.142.135",
             dn42IPv6: "fd99:727:bad0:3300::1",
             ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
+            ipv6: IPAvailability.No,
             notes: null
         },
         {

@@ -18,7 +18,7 @@ import { FullscreenControl } from "react-leaflet-fullscreen";
 import "react-leaflet-fullscreen/styles.css";
 import { NodeTables, ExtendedAirportTables, IPAvailability } from "../components/NodeTables";
 
-import { CountryToContinent } from "../components/CountryToContinent";
+import { AirportToPlaceName, ContinentColors, CountryToContinent } from "../components/geoinfo";
 
 const ListSocial = [
     {
@@ -327,7 +327,7 @@ export default function PageDN42() {
 
         fetchTopology();
         fetchTopology();
-        const interval = setInterval(fetchTopology, 25 * 1000);
+        const interval = setInterval(fetchTopology, 15 * 1000);
         return () => clearInterval(interval);
     }, []);
 
@@ -363,22 +363,26 @@ export default function PageDN42() {
                     {nt.map((node, index) => (
                         <Table.ColumnHeaderCell style={{
                             whiteSpace: "nowrap", position: "sticky", top: 0, zIndex: 20,
-                            backgroundColor: `hsl(${(index / nt.length) * 360}, 30%, 20%)`
-                        }} key={index}>{node.rc}</Table.ColumnHeaderCell>
+                            backgroundColor: ContinentColors[CountryToContinent[node.rc.slice(0, 2).toLocaleUpperCase()] || ""] || "var(--gray-7)"
+                        }} key={index}><Tooltip content={AirportToPlaceName[node.rc.toLocaleLowerCase().slice(3, 6)] + " " + (parseInt(node.rc.slice(6)) - 1 ? node.rc.slice(6) : "")}><div>{node.rc}</div></Tooltip></Table.ColumnHeaderCell>
                     ))}
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {nt.map((fromNode, rowIndex) => (
-                    <Table.Row key={rowIndex}>
+                {nt.map((fromNode, rowIndex) => {
+                    let fromName = AirportToPlaceName[fromNode.rc.toLocaleLowerCase().slice(3, 6)] + " " + (parseInt(fromNode.rc.slice(6)) - 1 ? fromNode.rc.slice(6) : "")
+
+                    return <Table.Row key={rowIndex}>
                         <Table.Cell style={{
                             fontWeight: "bold", whiteSpace: "nowrap", position: "sticky", left: 0, zIndex: 10,
-                            backgroundColor: `hsl(${(rowIndex / nt.length) * 360}, 30%, 20%)`
-                        }}>{fromNode.rc}</Table.Cell>
+                            backgroundColor: ContinentColors[CountryToContinent[fromNode.rc.slice(0, 2).toLocaleUpperCase()] || ""] || "var(--gray-7)"
+                        }}><Tooltip content={fromName}><div>{fromNode.rc}</div></Tooltip></Table.Cell>
                         {nt.map((toNode) => {
                             if (fromNode.sc === toNode.sc) {
                                 return <Table.Cell key={fromNode.sc} style={{ backgroundColor: "#444444" }}>-</Table.Cell>;
                             } else {
+                                let toName = AirportToPlaceName[toNode.rc.toLocaleLowerCase().slice(3, 6)] + " " + (parseInt(toNode.rc.slice(6)) - 1 ? toNode.rc.slice(6) : "")
+
                                 const hop: [String, number][] = [];
                                 let latency = 0;
 
@@ -431,8 +435,24 @@ export default function PageDN42() {
                                     if (loopBreak) break;
                                 }
 
+                                let tooltip = `${fromName} → ${toName}\n`;
+
+                                if (hop.length) {
+                                    for (let [hn, hl] of hop) {
+                                        let hopNode = nt.find(x => x.sc === hn);
+                                        if (hopNode) {
+                                            let hopName = AirportToPlaceName[hopNode.rc.toLocaleLowerCase().slice(3, 6)] + (parseInt(hopNode.rc.slice(6)) - 1 ? " " + hopNode.rc.slice(6) : "");
+                                            tooltip += `\n via  ${hopName} (${hl}ms)`;
+                                        } else {
+                                            tooltip += `\n via ${hn} (${hl}ms)`;
+                                        }
+                                    }
+                                } else {
+                                    tooltip += `\n direct`;
+                                }
+
                                 return <Table.Cell key={fromNode.sc + "-" + toNode.sc} style={{ whiteSpace: "nowrap", color: latency > 150 ? "#ff6b6b" : latency > 50 ? "#ffd93d" : latency > 0 ? "#8aff7f" : "inherit" }}>
-                                    <Tooltip content={hop.length ? "via " + hop.map(x => x[0] + " (" + x[1] + "ms)").join(" hop ") : "direct"}>
+                                    <Tooltip content={tooltip} style={{ whiteSpace: "pre-wrap" }}>
                                         <div>
                                             {latency > 0 ? Math.ceil(latency) + "ms" : "N/A"}
                                         </div>
@@ -441,7 +461,10 @@ export default function PageDN42() {
                             }
                         })}
                     </Table.Row>
-                ))}
+                })}
+                <Table.Row>
+                    <Table.Cell style={{ height: "var(--space-4)" }}></Table.Cell>
+                </Table.Row>
             </Table.Body>
         </Table.Root>;
     }, [topology]);

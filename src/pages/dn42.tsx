@@ -2,7 +2,7 @@ import { ParallaxBanner } from "react-scroll-parallax";
 import cls from "./dn42.module.scss";
 import DN42 from "./../assets/images/dn42.svg?no-inline";
 import { Element } from 'react-scroll'
-import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex, Dialog } from "@radix-ui/themes";
+import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex, Dialog, Spinner } from "@radix-ui/themes";
 import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone, PiTelegramLogoDuotone } from "react-icons/pi";
 import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -343,23 +343,38 @@ export default function PageDN42() {
     }, [sortBy, setSortBy, setSortDirection]);
 
     const cacheLatencyTable = useMemo(() => {
-        if (!topology) return "Loading...";
+        if (!topology) return <Spinner size="3" />
 
         const nt = NodeTables.slice().sort((a, b) => CountryToContinent[a.rc.slice(0, 2).toLocaleUpperCase()]?.localeCompare(CountryToContinent[b.rc.slice(0, 2).toLocaleUpperCase()]) || a.rc.localeCompare(b.rc));
 
-        return <Table.Root>
+        return <Table.Root style={{ width: '100%', height: '80vh' }}>
             <Table.Header>
                 <Table.Row>
-                    <Table.ColumnHeaderCell style={{ whiteSpace: "nowrap", position: "sticky", top: 0 }}>From \ To</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell
+                        style={{
+                            whiteSpace: "nowrap",
+                            position: "sticky",
+                            top: 0,
+                            left: 0,
+                            zIndex: 20,
+                            backgroundColor: "var(--color-panel-solid)"
+                        }}
+                    >From \ To</Table.ColumnHeaderCell>
                     {nt.map((node, index) => (
-                        <Table.ColumnHeaderCell key={index} style={{ whiteSpace: "nowrap", position: "sticky", top: 0 }}>{node.rc}</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell style={{
+                            whiteSpace: "nowrap", position: "sticky", top: 0, zIndex: 20,
+                            backgroundColor: `hsl(${(index / nt.length) * 360}, 30%, 20%)`
+                        }} key={index}>{node.rc}</Table.ColumnHeaderCell>
                     ))}
                 </Table.Row>
             </Table.Header>
             <Table.Body>
                 {nt.map((fromNode, rowIndex) => (
                     <Table.Row key={rowIndex}>
-                        <Table.Cell style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>{fromNode.rc}</Table.Cell>
+                        <Table.Cell style={{
+                            fontWeight: "bold", whiteSpace: "nowrap", position: "sticky", left: 0, zIndex: 10,
+                            backgroundColor: `hsl(${(rowIndex / nt.length) * 360}, 30%, 20%)`
+                        }}>{fromNode.rc}</Table.Cell>
                         {nt.map((toNode) => {
                             if (fromNode.sc === toNode.sc) {
                                 return <Table.Cell key={fromNode.sc} style={{ backgroundColor: "#444444" }}>-</Table.Cell>;
@@ -650,13 +665,13 @@ export default function PageDN42() {
                                 <Table.Root>
                                     <Table.Header>
                                         <Table.Row>
-                                            <Table.ColumnHeaderCell><Link href="#sort" onClick={() => handleSortChange("sc")}>Server</Link></Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell><Link href="#sort" onClick={() => handleSortChange("rc")}>Region Code</Link></Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell>IPv4</Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell>IPv6</Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell>Endpoint</Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell>DN42 IP</Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell>Notes</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}><Link href="#sort" onClick={() => handleSortChange("sc")}>Server</Link></Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}><Link href="#sort" onClick={() => handleSortChange("rc")}>Region Code</Link></Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>IPv4</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>IPv6</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>Endpoint</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>DN42 IP</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>Notes</Table.ColumnHeaderCell>
                                         </Table.Row>
                                     </Table.Header>
                                     <Table.Body>
@@ -691,13 +706,13 @@ export default function PageDN42() {
                             <Dialog.Trigger>
                                 <Link href="#bruh2">view latency table</Link>
                             </Dialog.Trigger>
-                            <Dialog.Content maxWidth="90vw">
-                                <Dialog.Title>Latency Table</Dialog.Title>
+                            <Dialog.Content maxWidth="90vw" style={{ padding: 0 }}>
+                                <div style={{ padding: "var(--space-5)", paddingBottom: 0 }}>
+                                    <Dialog.Title>Latency Table</Dialog.Title>
+                                </div>
 
-                                <div style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                                    <div style={{ padding: 16, width: "fit-content" }}>
-                                        {cacheLatencyTable}
-                                    </div>
+                                <div style={{ padding: "0 var(--space-4) 0 var(--space-4)", position: "relative" }}>
+                                    {cacheLatencyTable}
                                 </div>
                             </Dialog.Content>
                         </Dialog.Root>

@@ -250,6 +250,7 @@ export default function PageDN42() {
                                     <Tooltip content={tooltip} style={{ whiteSpace: "pre-wrap" }}>
                                         <div>
                                             {(latency > 0 && !isNaN(latency)) ? Math.ceil(latency) + "ms" : "N/A"}
+                                            <sup style={{ fontSize: "0.6em" }}>{hop.length ? hop.length : ""}</sup>
                                         </div>
                                     </Tooltip>
                                 </Table.Cell>;

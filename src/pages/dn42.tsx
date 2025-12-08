@@ -4,21 +4,13 @@ import DN42 from "./../assets/images/dn42.svg?no-inline";
 import { Element } from 'react-scroll'
 import { Badge, Heading, IconButton, Link, Text, Tooltip, Table, Button, Card, Switch, Flex, Dialog, Spinner } from "@radix-ui/themes";
 import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuotone, PiPhoneCallDuotone, PiFacebookLogoDuotone, PiMatrixLogoDuotone, PiComputerTowerDuotone, PiBroadcastDuotone, PiTelegramLogoDuotone } from "react-icons/pi";
-import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leaflet'
-import MarkerClusterGroup from "react-leaflet-cluster";
-import TextPath from 'react-leaflet-textpath';
+
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Icon } from "leaflet";
 
-import MarkerIcon from "leaflet/dist/images/marker-icon.png";
-import MarkerIcon2X from "leaflet/dist/images/marker-icon-2x.png";
-import MarkerShadow from "leaflet/dist/images/marker-shadow.png";
-import { FullscreenControl } from "react-leaflet-fullscreen";
-
-import "react-leaflet-fullscreen/styles.css";
-import { NodeTables, ExtendedAirportTables, IPAvailability } from "../components/NodeTables";
+import { NodeTables } from "../components/NodeTables";
 
 import { AirportToPlaceName, ContinentColors, CountryToContinent } from "../components/geoinfo";
+import NodeMap from "../components/NodeMap";
 
 const ListSocial = [
     {
@@ -104,60 +96,33 @@ const Services = [
     }
 ];
 
-function getCoords(nodeName: string, topology: { rgCode: Record<string, string>; geo: Record<string, [number, number]>; }): [number, number] | null {
-    const node = NodeTables.find(x => x.sc === nodeName);
-    if (node) return [node.lat, node.lon];
-
-    // Infer from airport code
-    const rg = topology.rgCode[nodeName];
-    if (!rg) {
-        console.warn("Region code for", nodeName, "not found. That should not have happened.");
-        return null;
-    }
-
-    const airport = rg.slice(3, 6).toLowerCase();
-    if (airport in topology.geo) {
-        const g = topology.geo[airport];
-        return [g[0], g[1]];
-    }
-
-    if (airport in ExtendedAirportTables) {
-        // @ts-ignore
-        const g = ExtendedAirportTables[airport];
-        return [g[0], g[1]];
-    }
-
-    return null;
-}
-
-function mirrorNearest(startLon: number, targetLon: number): number {
-    if (Number.EPSILON * 2 > Math.abs(targetLon - startLon)) {
-        return 0;
-    }
-
-    let distMirrors = [Math.abs(startLon - (targetLon - 360)), Math.abs(startLon - targetLon), Math.abs(startLon - (targetLon + 360))];
-
-    return (distMirrors.indexOf(Math.min(...distMirrors)) - 1) * 360;
-}
-
 export default function PageDN42() {
     const [openTable, setOpenTable] = useState(false);
-    const MarkerIconLL = useMemo(() => new Icon({
-        iconUrl: MarkerIcon,
-        iconRetinaUrl: MarkerIcon2X,
-        shadowUrl: MarkerShadow,
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        tooltipAnchor: [16, -28],
-        shadowSize: [41, 41]
-    }), []);
+
 
     const [topology, setTopology] = useState<{
-        topology: Record<string, [string, string | number][]>;
+        topology: Record<string, [string, number | null, string | null][]>;
         rgCode: Record<string, string>;
         geo: Record<string, [number, number]>;
     } | null>(null);
+
+    const formattedTopology = useMemo(() => {
+        if (!topology) return {};
+
+        const formatted: Record<string, Record<string, [nhRTT: number | null, nh: string | null]>> = {};
+        for (let node in topology.topology) {
+            formatted[node] = {};
+
+            for (let [peer, nhRTT, nh] of topology.topology[node]) {
+                formatted[node][peer] = [nhRTT, nh];
+            }
+        }
+
+        return formatted;
+    }, [topology]);
+    const dynamicRgCode = useMemo(() => topology?.rgCode || {}, [topology]);
+    const dynamicGeo = useMemo(() => topology?.geo || {}, [topology]);
+
     const [toggleTopology, setToggleTopology] = useState(false);
     const [toggleTopologyReverse, setToggleTopologyReverse] = useState(false);
     const [currentNodeSelected, setCurrentNodeSelected] = useState<string | null>(null);
@@ -165,157 +130,6 @@ export default function PageDN42() {
         if (!currentNodeSelected) return null;
         return NodeTables.find(x => x.sc === currentNodeSelected)?.rc || null;
     }, [currentNodeSelected]);
-
-    const renderTopologyPath = useMemo(() => {
-        if (!topology || !toggleTopology || !currentNodeSelected) return [];
-
-        const paths: Record<string, [[number, number], [number, number], string]> = {};
-        const selectedNodeCoords = getCoords(currentNodeSelected, topology);
-        if (!selectedNodeCoords) return [];
-
-        for (let [peer, nextHopOrLatency] of topology.topology[currentNodeSelected] || []) {
-            const topologyNonNull = topology;
-            function recursivelyTraversePath(target: string, current: string, mirror = 0, past: string[] = []) {
-                if (past.includes(current)) return; // avoid circular path
-
-                const t = topologyNonNull.topology[current]?.find(x => x[0] === target);
-                if (t) {
-                    const latencyOrNextHop = t[1];
-                    const currentNodeCoords = getCoords(current, topologyNonNull);
-                    if (!currentNodeCoords) return;
-                    currentNodeCoords[1] += mirror;
-
-                    switch (typeof latencyOrNextHop) {
-                        case "number": {
-                            const latency = latencyOrNextHop;
-
-                            const targetNodeCoords = getCoords(target, topologyNonNull);
-
-                            if (targetNodeCoords) {
-                                targetNodeCoords[1] += mirror;
-
-                                const furtherMirrorShift = mirrorNearest(currentNodeCoords[1], targetNodeCoords[1]);
-
-                                paths[current + "-" + target] = [currentNodeCoords, [targetNodeCoords[0], targetNodeCoords[1] + furtherMirrorShift], Math.ceil(latency) + "ms"];
-                            }
-
-                            return;
-                        }
-                        case "string": {
-                            const nextHop = latencyOrNextHop;
-
-                            const nextHopLatency = topologyNonNull.topology[current]?.find(x => x[0] === nextHop)?.[1] as number;
-                            const nextHopCoords = getCoords(nextHop, topologyNonNull);
-                            if (!nextHopCoords) return;
-
-                            nextHopCoords[1] += mirror;
-
-                            const furtherMirrorShift = mirrorNearest(currentNodeCoords[1], nextHopCoords[1]);
-                            nextHopCoords[1] += furtherMirrorShift;
-
-                            paths[current + "-" + nextHop] = [currentNodeCoords, nextHopCoords, Math.ceil(nextHopLatency) + "ms"];
-
-                            recursivelyTraversePath(target, nextHop, mirror + furtherMirrorShift, past.concat(current));
-                            break;
-                        }
-                    }
-                }
-            }
-
-            switch (typeof nextHopOrLatency) {
-                case "number": {
-                    const targetNodeCoords = getCoords(peer, topology);
-                    if (!targetNodeCoords) break;
-
-                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], targetNodeCoords[1]);
-                    paths[peer] = [selectedNodeCoords, [targetNodeCoords[0], targetNodeCoords[1] + mirrorOffset], Math.ceil(nextHopOrLatency) + "ms"];
-                    break;
-                }
-                case "string": {
-                    const nextHopCoords = getCoords(peer, topology);
-                    if (!nextHopCoords) break;
-
-                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], nextHopCoords[1]);
-                    recursivelyTraversePath(peer, nextHopOrLatency, mirrorOffset, [currentNodeSelected]);
-                    break;
-                }
-            }
-        }
-
-        return Object.values(paths)
-            // Merge paths that share the same coordinates (not necessary same device)
-            .reduce((acc, cur) => {
-                const existing = acc.find(x => x[0][0] === cur[0][0] && x[0][1] === cur[0][1] && x[1][0] === cur[1][0] && x[1][1] === cur[1][1]);
-                if (existing) {
-                    existing[2] += " / " + cur[2];
-                } else {
-                    acc.push(cur);
-                }
-
-                return acc;
-            }, [] as [[number, number], [number, number], string][]);
-    }, [topology, toggleTopology, currentNodeSelected]);
-
-    const renderReverseTopologyPath = useMemo(() => {
-        if (!topology || !toggleTopologyReverse || !currentNodeSelected) return [];
-
-        const paths: Record<string, [[number, number], [number, number], string]> = {};
-        const selectedNodeCoords = getCoords(currentNodeSelected, topology);
-        if (!selectedNodeCoords) return [];
-
-        for (let revNode in topology.topology) {
-            if (revNode === currentNodeSelected) continue;
-
-            const revNodeCoords = getCoords(revNode, topology);
-            if (!revNodeCoords) continue;
-
-            const nextHopOrLatency = topology.topology[revNode].find(x => x[0] === currentNodeSelected)?.[1];
-            if (!nextHopOrLatency) continue;
-
-            switch (typeof nextHopOrLatency) {
-                case "number": {
-                    const latency = nextHopOrLatency;
-
-                    const mirrorOffset = mirrorNearest(selectedNodeCoords[1], revNodeCoords[1]);
-                    revNodeCoords[1] += mirrorOffset;
-
-                    paths[revNode] = [revNodeCoords, selectedNodeCoords, Math.ceil(latency) + "ms"];
-                    break;
-                }
-
-                case "string": {
-                    // draw a line to next hop only. since we know every node will eventually lead to currentNodeSelected
-                    // we don't need to recursively traverse the path
-                    const nextHop = nextHopOrLatency;
-                    const nextHopCoords = getCoords(nextHop, topology);
-                    if (!nextHopCoords) break;
-
-                    const nextHopLatency = topology.topology[revNode]?.find(x => x[0] === nextHopOrLatency)?.[1];
-                    if (typeof nextHopLatency !== "number") break;
-
-                    const mirrorOffset = mirrorNearest(revNodeCoords[1], nextHopCoords[1]);
-                    nextHopCoords[1] += mirrorOffset;
-
-                    paths[revNode + "-" + nextHop] = [revNodeCoords, nextHopCoords, Math.ceil(nextHopLatency) + "ms"];
-
-                    break;
-                }
-            }
-        }
-
-        return Object.values(paths)
-            // Merge paths that share the same coordinates (not necessary same device)
-            .reduce((acc, cur) => {
-                const existing = acc.find(x => x[0][0] === cur[0][0] && x[0][1] === cur[0][1] && x[1][0] === cur[1][0] && x[1][1] === cur[1][1]);
-                if (existing) {
-                    existing[2] += " / " + cur[2];
-                } else {
-                    acc.push(cur);
-                }
-
-                return acc;
-            }, [] as [[number, number], [number, number], string][]);
-    }, [topology, toggleTopology, toggleTopologyReverse, currentNodeSelected]);
 
     useEffect(() => {
         function fetchTopology() {
@@ -388,65 +202,46 @@ export default function PageDN42() {
 
                                 let nextHop = fromNode.sc;
                                 for (; ;) {
-                                    const entry = topology?.topology[nextHop].find(x => x[0] === toNode.sc);
+                                    const entry = formattedTopology[nextHop][toNode.sc]; //topology?.topology[nextHop].find(x => x[0] === toNode.sc);
                                     if (!entry) {
                                         hop.push(["×(no path)", 0]);
                                         latency = 0;
                                         break;
                                     }
 
-                                    let loopBreak = false;
-                                    let value = entry[1];
-                                    switch (typeof value) {
-                                        case "number": {
-                                            latency += value;
-                                            loopBreak = true;
-                                            break;
-                                        }
+                                    let [nhRTT, nh] = entry;
 
-                                        case "string": {
-                                            let lat = topology?.topology[nextHop].find(x => x[0] === value)?.[1];
-                                            if (typeof lat === "string") {
-                                                value = lat;
-                                                console.log("Indirect next hop detected in latency table calculation:", fromNode.sc, "to", toNode.sc, topology?.topology[nextHop]);
-                                                lat = topology?.topology[nextHop].find(x => x[0] === value)?.[1];
-                                            }
-                                            latency += lat as number || 0;
-                                            nextHop = value;
-                                            if (hop.find(x => x[0] === nextHop)) {
-                                                hop.push(["×(loop - " + nextHop + ")", 0]);
-                                                latency = 0;
-                                                loopBreak = true;
-                                                break;
-                                            }
-                                            hop.push([value, Math.round((lat as number || 0) * 10) / 10]);
-                                            loopBreak = false;
-                                            break;
-                                        }
-
-                                        default:
-                                            hop.push(["×(invalid)", 0]);
+                                    if (nh) {
+                                        latency += nhRTT ?? NaN;
+                                        nextHop = nh;
+                                        if (hop.find(x => x[0] === nextHop)) {
+                                            hop.push(["×(loop - " + nextHop + ")", 0]);
                                             latency = 0;
-                                            console.log("Invalid next hop type in latency table calculation:", fromNode.sc, "to", toNode.sc, topology?.topology[nextHop], value);
-                                            loopBreak = true;
                                             break;
-                                    }
+                                        }
 
-                                    if (loopBreak) break;
+                                        hop.push([nh, Math.round((nhRTT as number || 0) * 10) / 10]);
+                                    } else {
+                                        latency += nhRTT ?? NaN;
+                                        break;
+                                    }
                                 }
 
                                 let tooltip = `${fromName} → ${toName}\n`;
 
                                 if (hop.length) {
+                                    let cul = 0;
                                     for (let [hn, hl] of hop) {
                                         let hopNode = nt.find(x => x.sc === hn);
                                         if (hopNode) {
                                             let hopName = AirportToPlaceName[hopNode.rc.toLocaleLowerCase().slice(3, 6)] + (parseInt(hopNode.rc.slice(6)) - 1 ? " " + hopNode.rc.slice(6) : "");
-                                            tooltip += `\n via  ${hopName} (${hl}ms)`;
+                                            tooltip += `\n via  ${hopName} (+${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;
                                         } else {
-                                            tooltip += `\n via ${hn} (${hl}ms)`;
+                                            tooltip += `\n via ${hn} (+${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;
                                         }
                                     }
+                                    if (latency - cul > 0)
+                                        tooltip += `\n last-mile (+${Math.ceil((latency - cul) * 10) / 10}ms)`;
                                 } else {
                                     tooltip += `\n direct`;
                                 }
@@ -454,7 +249,7 @@ export default function PageDN42() {
                                 return <Table.Cell key={fromNode.sc + "-" + toNode.sc} style={{ whiteSpace: "nowrap", color: latency > 150 ? "#ff6b6b" : latency > 50 ? "#ffd93d" : latency > 0 ? "#8aff7f" : "inherit" }}>
                                     <Tooltip content={tooltip} style={{ whiteSpace: "pre-wrap" }}>
                                         <div>
-                                            {latency > 0 ? Math.ceil(latency) + "ms" : "N/A"}
+                                            {(latency > 0 && !isNaN(latency)) ? Math.ceil(latency) + "ms" : "N/A"}
                                         </div>
                                     </Tooltip>
                                 </Table.Cell>;
@@ -574,109 +369,16 @@ export default function PageDN42() {
                             </Text>
                         </div>
 
-                        <MapContainer worldCopyJump center={[20, 0]} zoom={1.5} id="dn42-overview-map" className={cls.MapOverview}>
-                            <FullscreenControl />
-                            <TileLayer
-                                attribution='Maps &copy; <a href="https://www.thunderforest.com/">Thunderforest</a>, Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                // url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                url="https://tile.thunderforest.com/transport-dark/{z}/{x}/{y}{r}.png?apikey=491724f125b64e5299d20c9c1c17309d"
-                                maxZoom={18}
-                            />
-                            <MarkerClusterGroup zoomToBoundsOnClick maxClusterRadius={15}>
-                                {NodeTables.map((node, index) => new Array(5).fill(0).map((_, i) => (
-                                    <Marker icon={MarkerIconLL} position={[node.lat, node.lon + ((+i - 2) * 360)]} key={index + "-" + i}>
-                                        <MapPopup autoPan interactive eventHandlers={{
-                                            add: () => {
-                                                setCurrentNodeSelected(node.sc);
-                                            }
-                                        }}>
-                                            {node.flag} <strong>{node.rc}</strong> ({node.sc})<br /><br />
-                                            Endpoint: <code>{node.endpoint}</code><br />
-                                            IPv4: <Badge size="2" variant="solid" color={node.ipv4 === IPAvailability.Yes ? "green" : node.ipv4 === IPAvailability.No ? "red" : "yellow"}>{node.ipv4}</Badge>&nbsp;/&nbsp;
-                                            IPv6: <Badge size="2" variant="solid" color={node.ipv6 === IPAvailability.Yes ? "green" : node.ipv6 === IPAvailability.No ? "red" : "yellow"}>{node.ipv6}</Badge><br />
-                                            <br />
-                                            DN42 IPv4: <code>{node.dn42IPv4}</code><br />
-                                            DN42 IPv6: <code>{node.dn42IPv6}</code><br />
-                                            {node.notes && (<><br />Notes: {node.notes}</>)}
-                                        </MapPopup>
-                                    </Marker>
-                                )))}
-                            </MarkerClusterGroup>
+                        <NodeMap
+                            currentNodeSelected={currentNodeSelected}
+                            setCurrentNodeSelected={setCurrentNodeSelected}
+                            toggleTopology={toggleTopology}
+                            toggleTopologyReverse={toggleTopologyReverse}
+                            formattedTopology={formattedTopology || {}}
+                            dynamicRgCode={dynamicRgCode}
+                            dynamicGeo={dynamicGeo}
+                        />
 
-                            {toggleTopology && renderTopologyPath.map((path, index) => (
-                                new Array(5).fill(0).map((_, i) => ([
-                                    <TextPath
-                                        key={"f" + i + index + "-2"}
-                                        positions={[
-                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
-                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
-                                        ]}
-                                        text={">"}
-                                        attributes={{
-                                            fill: "#E5484D",
-                                            style: "font-size: 8px"
-                                        }}
-                                        // @ts-ignore
-                                        color="#FF204756"
-                                        repeat
-                                    />,
-                                    <TextPath
-                                        key={"f" + i + index}
-                                        positions={[
-                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
-                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
-                                        ]}
-                                        text={"↑ " + path[2]}
-                                        attributes={{
-                                            style: "font-weight: bold;",
-                                            fill: "#FFD1D9"
-                                        }}
-                                        // @ts-ignore
-                                        stroke={false}
-                                        center
-                                        offset={18}
-                                        orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
-                                    />
-                                ]))
-                            )).flat(2)}
-
-                            {toggleTopologyReverse && renderReverseTopologyPath.map((path, index) => (
-                                new Array(5).fill(0).map((_, i) => ([
-                                    <TextPath
-                                        key={"r" + i + index + "-2"}
-                                        positions={[
-                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
-                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
-                                        ]}
-                                        text={">"}
-                                        attributes={{
-                                            fill: "#30A46C",
-                                            style: "font-size: 8px"
-                                        }}
-                                        // @ts-ignore
-                                        color="#22FF991E"
-                                        repeat
-                                    />,
-                                    <TextPath
-                                        key={"f" + index}
-                                        positions={[
-                                            [path[0][0], path[0][1] + ((+i - 2) * 360)],
-                                            [path[1][0], path[1][1] + ((+i - 2) * 360)]
-                                        ]}
-                                        text={"↓ " + path[2]}
-                                        attributes={{
-                                            style: "font-weight: bold;",
-                                            fill: "#B1F1CB"
-                                        }}
-                                        // @ts-ignore
-                                        stroke={false}
-                                        center
-                                        offset={18}
-                                        orientation={path[0][1] < path[1][1] ? void 0 : "flip"}
-                                    />
-                                ]))
-                            )).flat()}
-                        </MapContainer>
                         {(toggleTopology || toggleTopologyReverse) && <div style={{ marginBottom: 8 }}>
                             <Text size="2" color="gray">Click on a node marker to view topology for that node.</Text>
                             {!!currentNodeSelected && <><br /><Text size="2" color="gray">Currently viewing topology for <strong>{currentNodeRCSelected}</strong> ({currentNodeSelected}). <Link href="#bruh" onClick={() => setCurrentNodeSelected(null)}>Clear selection</Link></Text></>}

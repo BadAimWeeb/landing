@@ -724,7 +724,20 @@ export const NodeTables: {
             dn42IPv6: "fd99:727:bad0:1400::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
-            notes: "Residental network.\nMay not be used as transit to other AS (low speed).\nDual upstream T-Mobile 5G & Comcast @ G99."
+            notes: "Residental network.\nShould not be used as transit to other AS (low speed & unstable latency)."
+        },
+        {
+            sc: "G05",
+            rc: "us-msp7",
+            flag: "🇺🇸",
+            lat: 44.881944,
+            lon: -93.221667,
+            endpoint: "<contact>.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.148",
+            dn42IPv6: "fd99:727:bad0:4000::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Tunnel,
+            notes: "Residental network."
         },
         {
             sc: "G99",
@@ -737,7 +750,7 @@ export const NodeTables: {
             dn42IPv6: "fd99:727:bad0:a00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
-            notes: "Residental network.\nMay not be used as transit to other AS (low speed)."
+            notes: "Residental network.\Should not be used as transit to other AS (low speed)."
         },
         {
             sc: "H01",

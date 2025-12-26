@@ -582,7 +582,32 @@ export const NodeTables: {
             ipv6: IPAvailability.Yes,
             notes: null
         },
-
+        {
+            sc: "C42",
+            rc: "ie-dub1",
+            flag: "🇮🇪",
+            lat: 53.421389,
+            lon: -6.27,
+            endpoint: "ie-dub1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.149",
+            dn42IPv6: "fd99:727:bad0:4100::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.No,
+            notes: null
+        },
+        {
+            sc: "C43",
+            rc: "es-mad1",
+            flag: "🇪🇸",
+            lat: 40.472222,
+            lon: -3.560833,
+            endpoint: "es-mad1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.150",
+            dn42IPv6: "fd99:727:bad0:4200::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: null
+        },
         {
             sc: "D01",
             rc: "au-syd2",
@@ -657,6 +682,19 @@ export const NodeTables: {
             endpoint: "sg-sin3.rc.badaimweeb.me",
             dn42IPv4: "172.22.142.178",
             dn42IPv6: "fd99:727:bad0:1800::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D07",
+            rc: "sg-sin5",
+            flag: "🇸🇬",
+            lat: 1.359167,
+            lon: 103.989444,
+            endpoint: "sg-sin5.rc.badaimweeb.me",
+            dn42IPv4: "172.22.130.190",
+            dn42IPv6: "fd99:727:bad0:1900::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
             notes: "Non-permanent node."

@@ -202,7 +202,7 @@ export default function PageDN42() {
 
                                 let nextHop = fromNode.sc;
                                 for (; ;) {
-                                    const entry = formattedTopology[nextHop][toNode.sc]; //topology?.topology[nextHop].find(x => x[0] === toNode.sc);
+                                    const entry = formattedTopology[nextHop]?.[toNode.sc]; //topology?.topology[nextHop].find(x => x[0] === toNode.sc);
                                     if (!entry) {
                                         hop.push(["×(no path)", 0]);
                                         latency = 0;

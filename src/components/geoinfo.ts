@@ -308,5 +308,7 @@ export const AirportToPlaceName: Record<string, string> = {
     "iah": "🇺🇸 Houston",
     "las": "🇺🇸 Las Vegas",
     "dtw": "🇺🇸 Detroit",
-    "slc": "🇺🇸 Salt Lake City"
+    "slc": "🇺🇸 Salt Lake City",
+    "dub": "🇮🇪 Dublin",
+    "mad": "🇪🇸 Madrid"
 }

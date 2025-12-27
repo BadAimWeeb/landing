@@ -12,6 +12,8 @@ import { NodeTables } from "../components/NodeTables";
 import { AirportToPlaceName, ContinentColors, CountryToContinent } from "../components/geoinfo";
 import NodeMap from "../components/NodeMap";
 
+const SPLIT_FORMAT = /^([a-z]{2})-([a-z]{3,4})(\d+)$/i;
+
 const ListSocial = [
     {
         name: "Matrix",
@@ -184,7 +186,8 @@ export default function PageDN42() {
             </Table.Header>
             <Table.Body>
                 {nt.map((fromNode, rowIndex) => {
-                    let fromName = AirportToPlaceName[fromNode.rc.toLocaleLowerCase().slice(3, 6)] + " " + (parseInt(fromNode.rc.slice(6)) - 1 ? fromNode.rc.slice(6) : "")
+                    let fsplit = SPLIT_FORMAT.exec(fromNode.rc.toLocaleLowerCase());
+                    let fromName = AirportToPlaceName[fsplit ? fsplit[2] : ""] + " " + (parseInt(fsplit ? fsplit[3] : "1") - 1 ? fsplit![3] : "")
 
                     return <Table.Row key={rowIndex}>
                         <Table.Cell style={{
@@ -195,7 +198,8 @@ export default function PageDN42() {
                             if (fromNode.sc === toNode.sc) {
                                 return <Table.Cell key={fromNode.sc} style={{ backgroundColor: "#444444" }}>-</Table.Cell>;
                             } else {
-                                let toName = AirportToPlaceName[toNode.rc.toLocaleLowerCase().slice(3, 6)] + " " + (parseInt(toNode.rc.slice(6)) - 1 ? toNode.rc.slice(6) : "")
+                                let tsplit = SPLIT_FORMAT.exec(toNode.rc.toLocaleLowerCase());
+                                let toName = AirportToPlaceName[tsplit ? tsplit[2] : ""] + " " + (parseInt(tsplit ? tsplit[3] : "1") - 1 ? tsplit![3] : "")
 
                                 const hop: [String, number][] = [];
                                 let latency = 0;
@@ -234,7 +238,8 @@ export default function PageDN42() {
                                     for (let [hn, hl] of hop) {
                                         let hopNode = nt.find(x => x.sc === hn);
                                         if (hopNode) {
-                                            let hopName = AirportToPlaceName[hopNode.rc.toLocaleLowerCase().slice(3, 6)] + (parseInt(hopNode.rc.slice(6)) - 1 ? " " + hopNode.rc.slice(6) : "");
+                                            let hns = SPLIT_FORMAT.exec(hopNode.rc.toLocaleLowerCase());
+                                            let hopName = AirportToPlaceName[hns ? hns[2] : ""] + (parseInt(hns ? hns[3] : "1") - 1 ? " " + hns![3] : "");
                                             tooltip += `\n via  ${hopName} (+${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;
                                         } else {
                                             tooltip += `\n via ${hn} (+${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;

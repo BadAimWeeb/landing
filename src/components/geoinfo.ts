@@ -310,5 +310,7 @@ export const AirportToPlaceName: Record<string, string> = {
     "dtw": "🇺🇸 Detroit",
     "slc": "🇺🇸 Salt Lake City",
     "dub": "🇮🇪 Dublin",
-    "mad": "🇪🇸 Madrid"
+    "mad": "🇪🇸 Madrid",
+    "rkv": "🇮🇸 Reykjavik",
+    "xfks": "🇩🇪 Falkenstein"
 }

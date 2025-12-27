@@ -609,6 +609,32 @@ export const NodeTables: {
             notes: null
         },
         {
+            sc: "C44",
+            rc: "is-rkv1",
+            flag: "🇮🇸",
+            lat: 64.13,
+            lon: -21.940556,
+            endpoint: "is-rkv1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.151",
+            dn42IPv6: "fd99:727:bad0:4300::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: null
+        },
+        {
+            sc: "C45",
+            rc: "de-xfks1",
+            flag: "🇩🇪",
+            lat: 50.466667,
+            lon: 12.366667,
+            endpoint: "de-xfks1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.150",
+            dn42IPv6: "fd99:727:bad0:4200::1",
+            ipv4: IPAvailability.NAT,
+            ipv6: IPAvailability.Yes,
+            notes: null
+        },
+        {
             sc: "D01",
             rc: "au-syd2",
             flag: "🇦🇺",

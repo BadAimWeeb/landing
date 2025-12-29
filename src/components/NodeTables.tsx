@@ -632,7 +632,7 @@ export const NodeTables: {
             dn42IPv6: "fd99:727:bad0:4200::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
-            notes: null
+            notes: "Clearnet MTU is 1420 bytes. WireGuard connection will use MTU 1340 (or lower if necessary)."
         },
         {
             sc: "D01",

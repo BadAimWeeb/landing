@@ -179,28 +179,22 @@ export default function PageDN42() {
                     {nt.map((node, index) => (
                         <Table.ColumnHeaderCell style={{
                             whiteSpace: "nowrap", position: "sticky", top: 0, zIndex: 20,
-                            backgroundColor: ContinentColors[CountryToContinent[node.rc.slice(0, 2).toLocaleUpperCase()] || ""] || "var(--gray-7)"
-                        }} key={index}><Tooltip content={AirportToPlaceName[node.rc.toLocaleLowerCase().slice(3, 6)] + " " + (parseInt(node.rc.slice(6)) - 1 ? node.rc.slice(6) : "")}><div>{node.rc}</div></Tooltip></Table.ColumnHeaderCell>
+                            backgroundColor: ContinentColors[CountryToContinent[node.country] || ""] || "var(--gray-7)"
+                        }} key={index}><Tooltip content={node.displayName}><div>{node.rc}</div></Tooltip></Table.ColumnHeaderCell>
                     ))}
                 </Table.Row>
             </Table.Header>
             <Table.Body>
                 {nt.map((fromNode, rowIndex) => {
-                    let fsplit = SPLIT_FORMAT.exec(fromNode.rc.toLocaleLowerCase());
-                    let fromName = AirportToPlaceName[fsplit ? fsplit[2] : ""] + " " + (parseInt(fsplit ? fsplit[3] : "1") - 1 ? fsplit![3] : "")
-
                     return <Table.Row key={rowIndex}>
                         <Table.Cell style={{
                             fontWeight: "bold", whiteSpace: "nowrap", position: "sticky", left: 0, zIndex: 10,
-                            backgroundColor: ContinentColors[CountryToContinent[fromNode.rc.slice(0, 2).toLocaleUpperCase()] || ""] || "var(--gray-7)"
-                        }}><Tooltip content={fromName}><div>{fromNode.rc}</div></Tooltip></Table.Cell>
+                            backgroundColor: ContinentColors[CountryToContinent[fromNode.country] || ""] || "var(--gray-7)"
+                        }}><Tooltip content={fromNode.displayName}><div>{fromNode.rc}</div></Tooltip></Table.Cell>
                         {nt.map((toNode) => {
                             if (fromNode.sc === toNode.sc) {
                                 return <Table.Cell key={fromNode.sc} style={{ backgroundColor: "#444444" }}>-</Table.Cell>;
                             } else {
-                                let tsplit = SPLIT_FORMAT.exec(toNode.rc.toLocaleLowerCase());
-                                let toName = AirportToPlaceName[tsplit ? tsplit[2] : ""] + " " + (parseInt(tsplit ? tsplit[3] : "1") - 1 ? tsplit![3] : "")
-
                                 const hop: [String, number][] = [];
                                 let latency = 0;
 
@@ -231,18 +225,16 @@ export default function PageDN42() {
                                     }
                                 }
 
-                                let tooltip = `${fromName} → ${toName}\n`;
+                                let tooltip = `${fromNode.displayName} → ${toNode.displayName}\n`;
 
                                 if (hop.length) {
                                     let cul = 0;
                                     for (let [hn, hl] of hop) {
                                         let hopNode = nt.find(x => x.sc === hn);
                                         if (hopNode) {
-                                            let hns = SPLIT_FORMAT.exec(hopNode.rc.toLocaleLowerCase());
-                                            let hopName = AirportToPlaceName[hns ? hns[2] : ""] + (parseInt(hns ? hns[3] : "1") - 1 ? " " + hns![3] : "");
-                                            tooltip += `\n via  ${hopName} (+${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;
+                                            tooltip += `\n via  ${hopNode.displayName} (${cul ? "+" : ""}${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;
                                         } else {
-                                            tooltip += `\n via ${hn} (+${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;
+                                            tooltip += `\n via ${hn} (${cul ? "+" : ""}${hl}ms) (PL ${Math.ceil((cul += hl) * 10) / 10}ms)`;
                                         }
                                     }
                                     if (latency - cul > 0)

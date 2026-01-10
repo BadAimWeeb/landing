@@ -312,5 +312,6 @@ export const AirportToPlaceName: Record<string, string> = {
     "dub": "🇮🇪 Dublin",
     "mad": "🇪🇸 Madrid",
     "rkv": "🇮🇸 Reykjavik",
-    "xfks": "🇩🇪 Falkenstein"
+    "xfks": "🇩🇪 Falkenstein",
+    "itm": "🇯🇵 Osaka",
 }

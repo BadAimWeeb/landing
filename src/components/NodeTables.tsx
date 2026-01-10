@@ -1,3 +1,6 @@
+import { AirportToPlaceName } from "./geoinfo";
+
+const SPLIT_FORMAT = /^([a-z]{2})-([a-z]{3,4})(\d+)$/i;
 
 export enum IPAvailability {
     No = "No",
@@ -10,10 +13,9 @@ export const ExtendedAirportTables = {
     "msp": [44.881944, -93.221667]
 };
 
-export const NodeTables: {
+export const BaseNodeTables: {
     sc: string;
     rc: string;
-    flag: string;
     lat: number;
     lon: number;
     endpoint: string;
@@ -26,7 +28,6 @@ export const NodeTables: {
         {
             sc: "A00",
             rc: "vn-lth1",
-            flag: "🇻🇳",
             lat: 10.772611,
             lon: 107.045278,
             endpoint: "vn-lth1.rc.badaimweeb.me",
@@ -39,7 +40,6 @@ export const NodeTables: {
         {
             sc: "A04",
             rc: "vn-lth3",
-            flag: "🇻🇳",
             lat: 10.772611,
             lon: 107.045278,
             endpoint: "vn-lth3.rc.badaimweeb.me",
@@ -52,7 +52,6 @@ export const NodeTables: {
         {
             sc: "A05",
             rc: "vn-lth4",
-            flag: "🇻🇳",
             lat: 10.772611,
             lon: 107.045278,
             endpoint: "vn-lth4.rc.badaimweeb.me",
@@ -65,7 +64,6 @@ export const NodeTables: {
         {
             sc: "A06",
             rc: "vn-lth5",
-            flag: "🇻🇳",
             lat: 10.772611,
             lon: 107.045278,
             endpoint: "vn-lth5.rc.badaimweeb.me",
@@ -78,7 +76,6 @@ export const NodeTables: {
         {
             sc: "C02",
             rc: "us-slc1",
-            flag: "🇺🇸",
             lat: 40.788333,
             lon: -111.977778,
             endpoint: "us-slc1.rc.badaimweeb.me",
@@ -91,7 +88,6 @@ export const NodeTables: {
         {
             sc: "C04",
             rc: "us-ord1",
-            flag: "🇺🇸",
             lat: 41.978611,
             lon: -87.904722,
             endpoint: "us-ord1.rc.badaimweeb.me",
@@ -104,7 +100,6 @@ export const NodeTables: {
         {
             sc: "C05",
             rc: "de-fra2",
-            flag: "🇩🇪",
             lat: 50.033333,
             lon: 8.570556,
             endpoint: "de-fra2.rc.badaimweeb.me",
@@ -117,7 +112,6 @@ export const NodeTables: {
         {
             sc: "C06",
             rc: "vn-sgn1",
-            flag: "🇻🇳",
             lat: 10.818889,
             lon: 106.651944,
             endpoint: "vn-sgn1.rc.badaimweeb.me",
@@ -130,7 +124,6 @@ export const NodeTables: {
         {
             sc: "C07",
             rc: "my-jhb1",
-            flag: "🇲🇾",
             lat: 1.640556,
             lon: 103.670278,
             endpoint: "my-jhb1.rc.badaimweeb.me",
@@ -143,7 +136,6 @@ export const NodeTables: {
         {
             sc: "C08",
             rc: "vn-han1",
-            flag: "🇻🇳",
             lat: 21.213889,
             lon: 105.803056,
             endpoint: "vn-han1.rc.badaimweeb.me",
@@ -156,7 +148,6 @@ export const NodeTables: {
         {
             sc: "C09",
             rc: "de-fra1",
-            flag: "🇩🇪",
             lat: 50.033333,
             lon: 8.570556,
             endpoint: "de-fra1.rc.badaimweeb.me",
@@ -169,7 +160,6 @@ export const NodeTables: {
         {
             sc: "C10",
             rc: "au-syd1",
-            flag: "🇦🇺",
             lat: -33.946111,
             lon: 151.177222,
             endpoint: "au-syd1.rc.badaimweeb.me",
@@ -182,7 +172,6 @@ export const NodeTables: {
         {
             sc: "C11",
             rc: "us-lax1",
-            flag: "🇺🇸",
             lat: 33.9425,
             lon: -118.408056,
             endpoint: "us-lax1.rc.badaimweeb.me",
@@ -195,7 +184,6 @@ export const NodeTables: {
         {
             sc: "C12",
             rc: "br-gru1",
-            flag: "🇧🇷",
             lat: -23.435556,
             lon: -46.473056,
             endpoint: "br-gru1.rc.badaimweeb.me",
@@ -208,7 +196,6 @@ export const NodeTables: {
         {
             sc: "C13",
             rc: "hk-hkg1",
-            flag: "🇭🇰",
             lat: 22.308889,
             lon: 113.914444,
             endpoint: "hk-hkg1.rc.badaimweeb.me",
@@ -221,7 +208,6 @@ export const NodeTables: {
         {
             sc: "C14",
             rc: "us-tpa1",
-            flag: "🇺🇸",
             lat: 27.979722,
             lon: -82.534722,
             endpoint: "us-tpa1.rc.badaimweeb.me",
@@ -234,7 +220,6 @@ export const NodeTables: {
         {
             sc: "C15",
             rc: "tw-tpe1",
-            flag: "🇹🇼",
             lat: 25.076389,
             lon: 121.223889,
             endpoint: "tw-tpe1.rc.badaimweeb.me",
@@ -247,7 +232,6 @@ export const NodeTables: {
         {
             sc: "C16",
             rc: "jp-hnd1",
-            flag: "🇯🇵",
             lat: 35.553333,
             lon: 139.781111,
             endpoint: "jp-hnd1.rc.badaimweeb.me",
@@ -260,7 +244,6 @@ export const NodeTables: {
         {
             sc: "C17",
             rc: "ao-nbj1",
-            flag: "🇦🇴",
             lat: -9.046778,
             lon: 13.507194,
             endpoint: "ao-nbj1.rc.badaimweeb.me",
@@ -273,7 +256,6 @@ export const NodeTables: {
         {
             sc: "C18",
             rc: "us-sjc1",
-            flag: "🇺🇸",
             lat: 37.362778,
             lon: -121.929167,
             endpoint: "us-sjc1.rc.badaimweeb.me",
@@ -286,7 +268,6 @@ export const NodeTables: {
         {
             sc: "C19",
             rc: "gb-lhr1",
-            flag: "🇬🇧",
             lat: 51.4775,
             lon: -0.461389,
             endpoint: "gb-lhr1.rc.badaimweeb.me",
@@ -299,7 +280,6 @@ export const NodeTables: {
         {
             sc: "C20",
             rc: "us-jfk1",
-            flag: "🇺🇸",
             lat: 40.639722,
             lon: -73.778889,
             endpoint: "us-jfk1.rc.badaimweeb.me",
@@ -312,7 +292,6 @@ export const NodeTables: {
         {
             sc: "C21",
             rc: "ru-ovb1",
-            flag: "🇷🇺",
             lat: 55.0125,
             lon: 82.650556,
             endpoint: "ru-ovb1.rc.badaimweeb.me",
@@ -325,7 +304,6 @@ export const NodeTables: {
         {
             sc: "C22",
             rc: "in-bom1",
-            flag: "🇮🇳",
             lat: 19.088611,
             lon: 72.868056,
             endpoint: "in-bom1.rc.badaimweeb.me",
@@ -338,7 +316,6 @@ export const NodeTables: {
         {
             sc: "C23",
             rc: "us-mci1",
-            flag: "🇺🇸",
             lat: 39.2975,
             lon: -94.713889,
             endpoint: "us-mci1.rc.badaimweeb.me",
@@ -351,7 +328,6 @@ export const NodeTables: {
         {
             sc: "C24",
             rc: "au-mel1",
-            flag: "🇦🇺",
             lat: -37.673333,
             lon: 144.843333,
             endpoint: "au-mel1.rc.badaimweeb.me",
@@ -364,7 +340,6 @@ export const NodeTables: {
         {
             sc: "C25",
             rc: "ru-svo1",
-            flag: "🇷🇺",
             lat: 55.972778,
             lon: 37.414722,
             endpoint: "ru-svo1.rc.badaimweeb.me",
@@ -377,7 +352,6 @@ export const NodeTables: {
         {
             sc: "C26",
             rc: "ca-yyz1",
-            flag: "🇨🇦",
             lat: 43.676111,
             lon: -79.630556,
             endpoint: "ca-yyz1.rc.badaimweeb.me",
@@ -390,7 +364,6 @@ export const NodeTables: {
         {
             sc: "C27",
             rc: "pl-gdn1",
-            flag: "🇵🇱",
             lat: 54.3775,
             lon: 18.466111,
             endpoint: "pl-gdn1.rc.badaimweeb.me",
@@ -403,7 +376,6 @@ export const NodeTables: {
         {
             sc: "C28",
             rc: "us-sea1",
-            flag: "🇺🇸",
             lat: 47.448889,
             lon: -122.309444,
             endpoint: "us-sea1.rc.badaimweeb.me",
@@ -416,7 +388,6 @@ export const NodeTables: {
         {
             sc: "C29",
             rc: "nl-ley1",
-            flag: "🇳🇱",
             lat: 52.460278,
             lon: 5.527222,
             endpoint: "nl-ley1.rc.badaimweeb.me",
@@ -429,7 +400,6 @@ export const NodeTables: {
         {
             sc: "C30",
             rc: "se-arn1",
-            flag: "🇸🇪",
             lat: 59.651944,
             lon: 17.918611,
             endpoint: "se-arn1.rc.badaimweeb.me",
@@ -442,7 +412,6 @@ export const NodeTables: {
         {
             sc: "C31",
             rc: "bg-sof1",
-            flag: "🇧🇬",
             lat: 42.695,
             lon: 23.408333,
             endpoint: "bg-sof1.rc.badaimweeb.me",
@@ -455,7 +424,6 @@ export const NodeTables: {
         {
             sc: "C32",
             rc: "fr-cdg1",
-            flag: "🇫🇷",
             lat: 49.009722,
             lon: 2.547778,
             endpoint: "fr-cdg1.rc.badaimweeb.me",
@@ -468,7 +436,6 @@ export const NodeTables: {
         {
             sc: "C33",
             rc: "ng-los1",
-            flag: "🇳🇬",
             lat: 6.577222,
             lon: 3.321111,
             endpoint: "ng-los1.rc.badaimweeb.me",
@@ -481,7 +448,6 @@ export const NodeTables: {
         {
             sc: "C34",
             rc: "tr-ist1",
-            flag: "🇹🇷",
             lat: 41.262222,
             lon: 28.727778,
             endpoint: "tr-ist1.rc.badaimweeb.me",
@@ -494,7 +460,6 @@ export const NodeTables: {
         {
             sc: "C35",
             rc: "fi-hel1",
-            flag: "🇫🇮",
             lat: 60.317222,
             lon: 24.963333,
             endpoint: "fi-hel1.rc.badaimweeb.me",
@@ -507,7 +472,6 @@ export const NodeTables: {
         {
             sc: "C36",
             rc: "za-jnb1",
-            flag: "🇿🇦",
             lat: -26.133333,
             lon: 28.25,
             endpoint: "za-jnb1.rc.badaimweeb.me",
@@ -520,7 +484,6 @@ export const NodeTables: {
         {
             sc: "C37",
             rc: "us-phx1",
-            flag: "🇺🇸",
             lat: 33.434167,
             lon: -112.011667,
             endpoint: "us-phx1.rc.badaimweeb.me",
@@ -533,7 +496,6 @@ export const NodeTables: {
         {
             sc: "C38",
             rc: "us-iah1",
-            flag: "🇺🇸",
             lat: 29.984444,
             lon: -95.341389,
             endpoint: "us-iah1.rc.badaimweeb.me",
@@ -546,7 +508,6 @@ export const NodeTables: {
         {
             sc: "C39",
             rc: "nl-ams1",
-            flag: "🇳🇱",
             lat: 52.3,
             lon: 4.765,
             endpoint: "nl-ams1.rc.badaimweeb.me",
@@ -559,7 +520,6 @@ export const NodeTables: {
         {
             sc: "C40",
             rc: "us-las1",
-            flag: "🇺🇸",
             lat: 36.08,
             lon: -115.152222,
             endpoint: "us-las1.rc.badaimweeb.me",
@@ -572,7 +532,6 @@ export const NodeTables: {
         {
             sc: "C41",
             rc: "us-dtw1",
-            flag: "🇺🇸",
             lat: 42.2125,
             lon: -83.353333,
             endpoint: "us-dtw1.rc.badaimweeb.me",
@@ -585,7 +544,6 @@ export const NodeTables: {
         {
             sc: "C42",
             rc: "ie-dub1",
-            flag: "🇮🇪",
             lat: 53.421389,
             lon: -6.27,
             endpoint: "ie-dub1.rc.badaimweeb.me",
@@ -598,7 +556,6 @@ export const NodeTables: {
         {
             sc: "C43",
             rc: "es-mad1",
-            flag: "🇪🇸",
             lat: 40.472222,
             lon: -3.560833,
             endpoint: "es-mad1.rc.badaimweeb.me",
@@ -611,7 +568,6 @@ export const NodeTables: {
         {
             sc: "C44",
             rc: "is-rkv1",
-            flag: "🇮🇸",
             lat: 64.13,
             lon: -21.940556,
             endpoint: "is-rkv1.rc.badaimweeb.me",
@@ -624,7 +580,6 @@ export const NodeTables: {
         {
             sc: "C45",
             rc: "de-xfks1",
-            flag: "🇩🇪",
             lat: 50.466667,
             lon: 12.366667,
             endpoint: "de-xfks1.rc.badaimweeb.me",
@@ -637,7 +592,6 @@ export const NodeTables: {
         {
             sc: "D01",
             rc: "au-syd2",
-            flag: "🇦🇺",
             lat: -33.946111,
             lon: 151.177222,
             endpoint: "au-syd2.rc.badaimweeb.me",
@@ -650,7 +604,6 @@ export const NodeTables: {
         {
             sc: "D02",
             rc: "us-lax2",
-            flag: "🇺🇸",
             lat: 33.9425,
             lon: -118.408056,
             endpoint: "us-lax2.rc.badaimweeb.me",
@@ -663,7 +616,6 @@ export const NodeTables: {
         {
             sc: "D03",
             rc: "au-syd3",
-            flag: "🇦🇺",
             lat: -33.946111,
             lon: 151.177222,
             endpoint: "au-syd3.rc.badaimweeb.me",
@@ -676,7 +628,6 @@ export const NodeTables: {
         {
             sc: "D04",
             rc: "sg-sin2",
-            flag: "🇸🇬",
             lat: 1.359167,
             lon: 103.989444,
             endpoint: "sg-sin2.rc.badaimweeb.me",
@@ -689,7 +640,6 @@ export const NodeTables: {
         {
             sc: "D05",
             rc: "id-cgk2",
-            flag: "🇮🇩",
             lat: -6.125556,
             lon: 106.655833,
             endpoint: "id-cgk2.rc.badaimweeb.me",
@@ -702,7 +652,6 @@ export const NodeTables: {
         {
             sc: "D06",
             rc: "sg-sin3",
-            flag: "🇸🇬",
             lat: 1.359167,
             lon: 103.989444,
             endpoint: "sg-sin3.rc.badaimweeb.me",
@@ -715,7 +664,6 @@ export const NodeTables: {
         {
             sc: "D07",
             rc: "sg-sin5",
-            flag: "🇸🇬",
             lat: 1.359167,
             lon: 103.989444,
             endpoint: "sg-sin5.rc.badaimweeb.me",
@@ -728,7 +676,6 @@ export const NodeTables: {
         {
             sc: "D08",
             rc: "sg-sin4",
-            flag: "🇸🇬",
             lat: 1.359167,
             lon: 103.989444,
             endpoint: "sg-sin4.rc.badaimweeb.me",
@@ -741,7 +688,6 @@ export const NodeTables: {
         {
             sc: "D09",
             rc: "us-atl2",
-            flag: "🇺🇸",
             lat: 33.636667,
             lon: -84.428056,
             endpoint: "us-atl2.rc.badaimweeb.me",
@@ -754,7 +700,6 @@ export const NodeTables: {
         {
             sc: "D10",
             rc: "in-blr2",
-            flag: "🇮🇳",
             lat: 13.198889,
             lon: 77.705556,
             endpoint: "in-blr2.rc.badaimweeb.me",
@@ -765,9 +710,44 @@ export const NodeTables: {
             notes: "Non-permanent node."
         },
         {
+            sc: "D11",
+            rc: "jp-hnd2",
+            lat: 35.553333,
+            lon: 139.781111,
+            endpoint: "jp-hnd2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.131",
+            dn42IPv6: "fd99:727:bad0:2f00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D12",
+            rc: "jp-itm2",
+            lat: 34.784444,
+            lon: 135.439167,
+            endpoint: "jp-itm2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.154",
+            dn42IPv6: "fd99:727:bad0:4600::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D13",
+            rc: "jp-hnd3",
+            lat: 35.553333,
+            lon: 139.781111,
+            endpoint: "jp-hnd3.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.155",
+            dn42IPv6: "fd99:727:bad0:4700::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
             sc: "E03",
             rc: "vn-sgn2",
-            flag: "🇻🇳",
             lat: 10.818889,
             lon: 106.651944,
             endpoint: "vn-sgn2.rc.badaimweeb.me",
@@ -780,7 +760,6 @@ export const NodeTables: {
         {
             sc: "G00",
             rc: "us-msp3",
-            flag: "🇺🇸",
             lat: 44.881944,
             lon: -93.221667,
             endpoint: "<contact>.rc.badaimweeb.me",
@@ -793,7 +772,6 @@ export const NodeTables: {
         {
             sc: "G05",
             rc: "us-msp7",
-            flag: "🇺🇸",
             lat: 44.881944,
             lon: -93.221667,
             endpoint: "<contact>.rc.badaimweeb.me",
@@ -806,7 +784,6 @@ export const NodeTables: {
         {
             sc: "G99",
             rc: "us-msp1",
-            flag: "🇺🇸",
             lat: 44.881944,
             lon: -93.221667,
             endpoint: "<contact>.rc.badaimweeb.me",
@@ -819,7 +796,6 @@ export const NodeTables: {
         {
             sc: "H01",
             rc: "vn-dad1",
-            flag: "🇻🇳",
             lat: 16.043889,
             lon: 108.199444,
             endpoint: "vn-dad1.rc.badaimweeb.me",
@@ -832,7 +808,6 @@ export const NodeTables: {
         {
             sc: "H02",
             rc: "vn-vii1",
-            flag: "🇻🇳",
             lat: 18.736725,
             lon: 105.670881,
             endpoint: "<contact>.rc.badaimweeb.me",
@@ -844,3 +819,57 @@ export const NodeTables: {
         }
     ];
 
+const EMOJI_FLAG_TABLE: { [key: string]: string } = {
+    "A":"🇦",
+    "B":"🇧",
+    "C":"🇨",
+    "D":"🇩",
+    "E":"🇪",
+    "F":"🇫",
+    "G":"🇬",
+    "H":"🇭",
+    "I":"🇮",
+    "J":"🇯",
+    "K":"🇰",
+    "L":"🇱",
+    "M":"🇲",
+    "N":"🇳",
+    "O":"🇴",
+    "P":"🇵",
+    "Q":"🇶",
+    "R":"🇷",
+    "S":"🇸",
+    "T":"🇹",
+    "U":"🇺",
+    "V":"🇻",
+    "W":"🇼",
+    "X":"🇽",
+    "Y":"🇾",
+    "Z":"🇿"
+}
+
+export const NodeTables: {
+    sc: string;
+    rc: string;
+    country: string;
+    flag: string;
+    displayName: string;
+    lat: number;
+    lon: number;
+    endpoint: string;
+    dn42IPv4: string;
+    dn42IPv6: string;
+    ipv4: IPAvailability;
+    ipv6: IPAvailability;
+    notes: string | null;
+}[] = BaseNodeTables.map(node => {
+    let tsplit = SPLIT_FORMAT.exec(node.rc.toLocaleLowerCase());
+    let name = (AirportToPlaceName[tsplit ? tsplit[2] : ""] ?? `Region ${tsplit ? tsplit[2] : ""}`) + " " + (parseInt(tsplit ? tsplit[3] : "1") - 1 ? tsplit![3] : "");
+
+    return {
+        ...node,
+        country: tsplit ? tsplit[1].toUpperCase() : "xx",
+        flag: tsplit ? (EMOJI_FLAG_TABLE[tsplit[1].toUpperCase().charAt(0)] + EMOJI_FLAG_TABLE[tsplit[1].toUpperCase().charAt(1)]) : "🏳️",
+        displayName: name
+    }
+});

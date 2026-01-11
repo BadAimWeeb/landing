@@ -9,10 +9,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { NodeTables } from "../components/NodeTables";
 
-import { AirportToPlaceName, ContinentColors, CountryToContinent } from "../components/geoinfo";
+import { ContinentColors, CountryToContinent } from "../components/geoinfo";
 import NodeMap from "../components/NodeMap";
-
-const SPLIT_FORMAT = /^([a-z]{2})-([a-z]{3,4})(\d+)$/i;
 
 const ListSocial = [
     {

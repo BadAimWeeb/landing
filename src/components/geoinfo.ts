@@ -314,4 +314,6 @@ export const AirportToPlaceName: Record<string, string> = {
     "rkv": "🇮🇸 Reykjavik",
     "xfks": "🇩🇪 Falkenstein",
     "itm": "🇯🇵 Osaka",
+    "hnl": "🇺🇸 Honolulu",
+    "sqq": "🇱🇹 Siauliai"
 }

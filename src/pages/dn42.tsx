@@ -148,13 +148,18 @@ export default function PageDN42() {
     const [sortBy, setSortBy] = useState<"sc" | "rc">("rc");
     const [sortDirection, setSortDirection] = useState<1 | -1>(1);
 
-    const handleSortChange = useCallback((sort: typeof sortBy) => {
-        if (sort === sortBy) {
-            setSortDirection(oldSortDirection => (oldSortDirection === 1 ? -1 : 1));
+    const handleSortChange = useCallback(() => {
+        if (sortDirection === 1) {
+            setSortDirection(-1);
         } else {
-            setSortBy(sort);
+            if (sortBy === "rc") {
+                setSortBy("sc");
+            } else {
+                setSortBy("rc");
+            }
+            setSortDirection(1);
         }
-    }, [sortBy, setSortBy, setSortDirection]);
+    }, [sortDirection, sortBy, setSortBy, setSortDirection]);
 
     const cacheLatencyTable = useMemo(() => {
         if (!topology) return <Spinner size="3" />
@@ -386,8 +391,7 @@ export default function PageDN42() {
                                 <Table.Root>
                                     <Table.Header>
                                         <Table.Row>
-                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}><Link href="#sort" onClick={() => handleSortChange("sc")}>Server</Link></Table.ColumnHeaderCell>
-                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}><Link href="#sort" onClick={() => handleSortChange("rc")}>Region Code</Link></Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}><Link href="#sort" onClick={() => handleSortChange()}>Server</Link></Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>IPv4</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>IPv6</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>Endpoint</Table.ColumnHeaderCell>
@@ -406,8 +410,7 @@ export default function PageDN42() {
                                             })
                                             .map((node, index) => (
                                                 <Table.Row key={index}>
-                                                    <Table.Cell>{node.sc}</Table.Cell>
-                                                    <Table.Cell>{node.rc}</Table.Cell>
+                                                    <Table.Cell>{node.displayName}<br /><span style={{ lineHeight: 2 }}><strong>{node.rc}</strong> <span style={{ fontSize: 10 }}>({node.sc})</span></span></Table.Cell>
                                                     <Table.Cell>{node.ipv4}</Table.Cell>
                                                     <Table.Cell>{node.ipv6}</Table.Cell>
                                                     <Table.Cell><code>{node.endpoint}</code></Table.Cell>

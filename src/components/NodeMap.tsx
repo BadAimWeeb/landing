@@ -219,7 +219,7 @@ export default function NodeMap({
 
                 return acc;
             }, [] as [[number, number], [number, number], string][]);
-    }, [toggleTopology, formattedTopology, currentNodeSelected, dynamicRgCode, dynamicGeo]);
+    }, [toggleTopologyReverse, formattedTopology, currentNodeSelected, dynamicRgCode, dynamicGeo]);
 
     return (
         <MapContainer worldCopyJump center={[20, 0]} zoom={1.5} id="dn42-overview-map" className={cls.MapOverview}>
@@ -238,7 +238,8 @@ export default function NodeMap({
                                 setCurrentNodeSelected(node.sc);
                             }
                         }}>
-                            {node.flag} <strong>{node.rc}</strong> ({node.sc})<br /><br />
+                            <strong>{node.displayName}</strong> - <strong>{node.rc}</strong> <span style={{ fontSize: 10 }}>({node.sc})</span><br />
+                            <br />
                             Endpoint: <code>{node.endpoint}</code><br />
                             IPv4: <Badge size="2" variant="solid" color={node.ipv4 === IPAvailability.Yes ? "green" : node.ipv4 === IPAvailability.No ? "red" : "yellow"}>{node.ipv4}</Badge>&nbsp;/&nbsp;
                             IPv6: <Badge size="2" variant="solid" color={node.ipv6 === IPAvailability.Yes ? "green" : node.ipv6 === IPAvailability.No ? "red" : "yellow"}>{node.ipv6}</Badge><br />

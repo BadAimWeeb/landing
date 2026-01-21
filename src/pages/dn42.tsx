@@ -93,6 +93,22 @@ const Services = [
                 url: "http://[fd99:727:bad0:f000::]"
             }
         ]
+    },
+    {
+        image: "",
+        name: "Anycast DNS",
+        type: "",
+        description: "anycast DNS resolver for dn42",
+        buttons: [
+            {
+                name: "dn42 ipv4",
+                url: "http://172.22.130.179"
+            },
+            {
+                name: "dn42 ipv6",
+                url: "http://[fd99:727:bad0:f801::cafe:53]"
+            }
+        ]
     }
 ];
 

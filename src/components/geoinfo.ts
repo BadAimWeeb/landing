@@ -315,5 +315,9 @@ export const AirportToPlaceName: Record<string, string> = {
     "xfks": "🇩🇪 Falkenstein",
     "itm": "🇯🇵 Osaka",
     "hnl": "🇺🇸 Honolulu",
-    "sqq": "🇱🇹 Siauliai"
+    "sqq": "🇱🇹 Siauliai",
+    "icn": "🇰🇷 Seoul",
+    "zrh": "🇨🇭 Zurich",
+    "rba": "🇲🇦 Rabat",
+    "xbhs": "🇨🇦 Beauharnois"
 }

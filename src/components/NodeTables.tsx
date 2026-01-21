@@ -383,7 +383,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3100::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
-            notes: null
+            notes: "CMIN2"
         },
         {
             sc: "C29",
@@ -614,6 +614,42 @@ export const BaseNodeTables: {
             notes: null
         },
         {
+            sc: "C48",
+            rc: "jp-itm1",
+            lat: 35.689444,
+            lon: 139.691667,
+            endpoint: "<contact>.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.158",
+            dn42IPv6: "fd99:727:bad0:4a00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Tunnel,
+            notes: "CN2-GIA. Does not have native IPv6, but still carried by hosting provider via SIT tunnel @ ~1ms diff. Selective peering."
+        },
+        {
+            sc: "C49",
+            rc: "kr-icn1",
+            lat: 37.463333, 
+            lon: 126.44,
+            endpoint: "kr-icn1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.159",
+            dn42IPv6: "fd99:727:bad0:4b00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: null
+        },
+        {
+            sc: "C51",
+            rc: "ch-zrh1",
+            lat: 47.464722,
+            lon: 8.549167,
+            endpoint: "ch-zrh1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.0",
+            dn42IPv6: "fd99:727:bad0:4d00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: null
+        },
+        {
             sc: "D01",
             rc: "au-syd2",
             lat: -33.946111,
@@ -765,6 +801,30 @@ export const BaseNodeTables: {
             endpoint: "jp-hnd3.rc.badaimweeb.me",
             dn42IPv4: "172.22.142.155",
             dn42IPv6: "fd99:727:bad0:4700::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D14",
+            rc: "ma-rba2",
+            lat: 34.051389,
+            lon: -6.751389,
+            endpoint: "ma-rba2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.1",
+            dn42IPv6: "fd99:727:bad0:4e00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D15",
+            rc: "ca-xbhs2",
+            lat: 45.309315,
+            lon: -73.896548,
+            endpoint: "ca-xbhs2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.2",
+            dn42IPv6: "fd99:727:bad0:4f00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
             notes: "Non-permanent node."

@@ -616,8 +616,8 @@ export const BaseNodeTables: {
         {
             sc: "C48",
             rc: "jp-itm1",
-            lat: 35.689444,
-            lon: 139.691667,
+            lat: 34.784444,
+            lon: 135.439167,
             endpoint: "<contact>.rc.badaimweeb.me",
             dn42IPv4: "172.22.142.158",
             dn42IPv6: "fd99:727:bad0:4a00::1",

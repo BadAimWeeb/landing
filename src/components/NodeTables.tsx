@@ -733,42 +733,42 @@ export const BaseNodeTables: {
             ipv6: IPAvailability.Yes,
             notes: "Non-permanent node."
         },
-        {
-            sc: "D08",
-            rc: "sg-sin4",
-            lat: 1.359167,
-            lon: 103.989444,
-            endpoint: "sg-sin4.rc.badaimweeb.me",
-            dn42IPv4: "172.22.142.128",
-            dn42IPv6: "fd99:727:bad0:2c00::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
-        {
-            sc: "D09",
-            rc: "us-atl2",
-            lat: 33.636667,
-            lon: -84.428056,
-            endpoint: "us-atl2.rc.badaimweeb.me",
-            dn42IPv4: "172.22.142.129",
-            dn42IPv6: "fd99:727:bad0:2d00::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
-        {
-            sc: "D10",
-            rc: "in-blr2",
-            lat: 13.198889,
-            lon: 77.705556,
-            endpoint: "in-blr2.rc.badaimweeb.me",
-            dn42IPv4: "172.22.142.130",
-            dn42IPv6: "fd99:727:bad0:2e00::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
+        // {
+        //     sc: "D08",
+        //     rc: "sg-sin4",
+        //     lat: 1.359167,
+        //     lon: 103.989444,
+        //     endpoint: "sg-sin4.rc.badaimweeb.me",
+        //     dn42IPv4: "172.22.142.128",
+        //     dn42IPv6: "fd99:727:bad0:2c00::1",
+        //     ipv4: IPAvailability.Yes,
+        //     ipv6: IPAvailability.Yes,
+        //     notes: "Non-permanent node."
+        // },
+        // {
+        //     sc: "D09",
+        //     rc: "us-atl2",
+        //     lat: 33.636667,
+        //     lon: -84.428056,
+        //     endpoint: "us-atl2.rc.badaimweeb.me",
+        //     dn42IPv4: "172.22.142.129",
+        //     dn42IPv6: "fd99:727:bad0:2d00::1",
+        //     ipv4: IPAvailability.Yes,
+        //     ipv6: IPAvailability.Yes,
+        //     notes: "Non-permanent node."
+        // },
+        // {
+        //     sc: "D10",
+        //     rc: "in-blr2",
+        //     lat: 13.198889,
+        //     lon: 77.705556,
+        //     endpoint: "in-blr2.rc.badaimweeb.me",
+        //     dn42IPv4: "172.22.142.130",
+        //     dn42IPv6: "fd99:727:bad0:2e00::1",
+        //     ipv4: IPAvailability.Yes,
+        //     ipv6: IPAvailability.Yes,
+        //     notes: "Non-permanent node."
+        // },
         {
             sc: "D11",
             rc: "jp-hnd2",

@@ -650,6 +650,18 @@ export const BaseNodeTables: {
             notes: null
         },
         {
+            sc: "C52",
+            rc: "nz-akl1",
+            lat: -37.008056,
+            lon: 174.791667,
+            endpoint: "nz-akl1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.3",
+            dn42IPv6: "fd99:727:bad0:5000::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: null
+        },
+        {
             sc: "D01",
             rc: "au-syd2",
             lat: -33.946111,

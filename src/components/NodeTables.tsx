@@ -638,6 +638,18 @@ export const BaseNodeTables: {
             notes: null
         },
         {
+            sc: "C50",
+            rc: "hk-hkg2",
+            lat: 22.308889, 
+            lon: 113.914722,
+            endpoint: "hk-hkg2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.179",
+            dn42IPv6: "fd99:727:bad0:4c00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: null
+        },
+        {
             sc: "C51",
             rc: "ch-zrh1",
             lat: 47.464722,
@@ -745,42 +757,42 @@ export const BaseNodeTables: {
             ipv6: IPAvailability.Yes,
             notes: "Non-permanent node."
         },
-        // {
-        //     sc: "D08",
-        //     rc: "sg-sin4",
-        //     lat: 1.359167,
-        //     lon: 103.989444,
-        //     endpoint: "sg-sin4.rc.badaimweeb.me",
-        //     dn42IPv4: "172.22.142.128",
-        //     dn42IPv6: "fd99:727:bad0:2c00::1",
-        //     ipv4: IPAvailability.Yes,
-        //     ipv6: IPAvailability.Yes,
-        //     notes: "Non-permanent node."
-        // },
-        // {
-        //     sc: "D09",
-        //     rc: "us-atl2",
-        //     lat: 33.636667,
-        //     lon: -84.428056,
-        //     endpoint: "us-atl2.rc.badaimweeb.me",
-        //     dn42IPv4: "172.22.142.129",
-        //     dn42IPv6: "fd99:727:bad0:2d00::1",
-        //     ipv4: IPAvailability.Yes,
-        //     ipv6: IPAvailability.Yes,
-        //     notes: "Non-permanent node."
-        // },
-        // {
-        //     sc: "D10",
-        //     rc: "in-blr2",
-        //     lat: 13.198889,
-        //     lon: 77.705556,
-        //     endpoint: "in-blr2.rc.badaimweeb.me",
-        //     dn42IPv4: "172.22.142.130",
-        //     dn42IPv6: "fd99:727:bad0:2e00::1",
-        //     ipv4: IPAvailability.Yes,
-        //     ipv6: IPAvailability.Yes,
-        //     notes: "Non-permanent node."
-        // },
+        {
+            sc: "D08",
+            rc: "sg-sin4",
+            lat: 1.359167,
+            lon: 103.989444,
+            endpoint: "sg-sin4.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.128",
+            dn42IPv6: "fd99:727:bad0:2c00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D09",
+            rc: "mx-mex2",
+            lat: 19.436111,
+            lon: -99.071944,
+            endpoint: "mx-mex2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.129",
+            dn42IPv6: "fd99:727:bad0:2d00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D10",
+            rc: "cl-scl2",
+            lat: -33.392778,
+            lon: -70.785556,
+            endpoint: "cl-scl2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.130",
+            dn42IPv6: "fd99:727:bad0:2e00::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            notes: "Non-permanent node."
+        },
         {
             sc: "D11",
             rc: "jp-hnd2",

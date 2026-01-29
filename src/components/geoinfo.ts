@@ -320,5 +320,8 @@ export const AirportToPlaceName: Record<string, string> = {
     "zrh": "🇨🇭 Zurich",
     "rba": "🇲🇦 Rabat",
     "xbhs": "🇨🇦 Beauharnois",
-    "akl": "🇳🇿 Auckland"
+    "akl": "🇳🇿 Auckland",
+    "mex": "🇲🇽 Mexico City",
+    "scl": "🇨🇱 Santiago",
+    "gum": "🇬🇺 Guam"
 }

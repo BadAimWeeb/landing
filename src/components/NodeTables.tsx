@@ -578,18 +578,6 @@ export const BaseNodeTables: {
             notes: null
         },
         {
-            sc: "C45",
-            rc: "de-xfks1",
-            lat: 50.466667,
-            lon: 12.366667,
-            endpoint: "de-xfks1.rc.badaimweeb.me",
-            dn42IPv4: "172.22.142.150",
-            dn42IPv6: "fd99:727:bad0:4200::1",
-            ipv4: IPAvailability.NAT,
-            ipv6: IPAvailability.Yes,
-            notes: "Clearnet MTU is 1420 bytes. WireGuard connection will use MTU 1340 (or lower if necessary)."
-        },
-        {
             sc: "C46",
             rc: "us-hnl1",
             lat: 21.318611,
@@ -686,18 +674,6 @@ export const BaseNodeTables: {
             notes: "Non-permanent node."
         },
         {
-            sc: "D02",
-            rc: "us-lax2",
-            lat: 33.9425,
-            lon: -118.408056,
-            endpoint: "us-lax2.rc.badaimweeb.me",
-            dn42IPv4: "172.22.142.165",
-            dn42IPv6: "fd99:727:bad0:1000::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
-        {
             sc: "D03",
             rc: "au-syd3",
             lat: -33.946111,
@@ -710,18 +686,6 @@ export const BaseNodeTables: {
             notes: "Non-permanent node."
         },
         {
-            sc: "D04",
-            rc: "sg-sin2",
-            lat: 1.359167,
-            lon: 103.989444,
-            endpoint: "sg-sin2.rc.badaimweeb.me",
-            dn42IPv4: "172.22.142.176",
-            dn42IPv6: "fd99:727:bad0:1600::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
-        {
             sc: "D05",
             rc: "id-cgk2",
             lat: -6.125556,
@@ -729,18 +693,6 @@ export const BaseNodeTables: {
             endpoint: "id-cgk2.rc.badaimweeb.me",
             dn42IPv4: "172.22.142.177",
             dn42IPv6: "fd99:727:bad0:1700::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
-        {
-            sc: "D06",
-            rc: "sg-sin3",
-            lat: 1.359167,
-            lon: 103.989444,
-            endpoint: "sg-sin3.rc.badaimweeb.me",
-            dn42IPv4: "172.22.142.178",
-            dn42IPv6: "fd99:727:bad0:1800::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
             notes: "Non-permanent node."
@@ -825,30 +777,6 @@ export const BaseNodeTables: {
             endpoint: "jp-hnd3.rc.badaimweeb.me",
             dn42IPv4: "172.22.142.155",
             dn42IPv6: "fd99:727:bad0:4700::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
-        {
-            sc: "D14",
-            rc: "ma-rba2",
-            lat: 34.051389,
-            lon: -6.751389,
-            endpoint: "ma-rba2.rc.badaimweeb.me",
-            dn42IPv4: "172.22.123.1",
-            dn42IPv6: "fd99:727:bad0:4e00::1",
-            ipv4: IPAvailability.Yes,
-            ipv6: IPAvailability.Yes,
-            notes: "Non-permanent node."
-        },
-        {
-            sc: "D15",
-            rc: "ca-xbhs2",
-            lat: 45.309315,
-            lon: -73.896548,
-            endpoint: "ca-xbhs2.rc.badaimweeb.me",
-            dn42IPv4: "172.22.123.2",
-            dn42IPv6: "fd99:727:bad0:4f00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
             notes: "Non-permanent node."

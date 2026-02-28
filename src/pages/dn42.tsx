@@ -334,8 +334,16 @@ export default function PageDN42() {
                                 <li><b>(4242423797, 101, 41..70)</b>: routes learned in server with this <Link href="https://dn42.dev/howto/BGP-communities#region">dn42 region</Link></li>
                                 <li><b>(4242423797, 102, x)</b>: routes learned in server with this <Link href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/all/all.csv">ISO 3166-1 numeric country code</Link></li>
                             </ul>
-                            Cold-potato routing is used if route contains dn42 region community and/or dn42 country community. Hot-potato routing is used otherwise.<br />
-                            Routes with AS_LENGTH &gt; 8 are rejected, as it usually indicates a zombie/ghost route (failed to withdraw routes down the chain).<br />
+                            To assist in traffic engineering, my AS also implements the following large communities you can set on your routes:
+                            <ul>
+                                <li><b>(4242423797, 201, 41..70)</b>: (blacklist) do not announce in this <Link href="https://dn42.dev/howto/BGP-communities#region">dn42 region</Link></li>
+                                <li><b>(4242423797, 202, x)</b>: (blacklist) do not announce in this <Link href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/all/all.csv">ISO 3166-1 numeric country code</Link></li>
+                                <li><b>(4242423797, 203, 1..16)</b>: prepend my AS number from 1 to 16 times. Be careful that some AS will filter out AS_PATHs that are too long (usually maximum are 8 overall, not non-duplicating).</li>
+                                <li><b>(4242423797, 204, 41..70)</b>: (whitelist) announce only in these <Link href="https://dn42.dev/howto/BGP-communities#region">dn42 region</Link></li>
+                                <li><b>(4242423797, 205, x)</b>: (whitelist) announce only in these <Link href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/all/all.csv">ISO 3166-1 numeric country code</Link></li>
+                            </ul>
+                            Cold-potato routing is used if route contains dn42 region community and/or dn42 country community (allow 1 AS longer per match). Hot-potato routing is used otherwise.<br />
+                            Routes that are passing through &gt; 8 different ASes are rejected, as it usually indicates a zombie/ghost route (failed to withdraw routes down the chain).<br />
                             <br /><br />
                             If you want to peer with me, I have a few requirements:<br />
                             <ul>

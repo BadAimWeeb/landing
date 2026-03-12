@@ -2,7 +2,7 @@ import { MapContainer, Marker, TileLayer, Popup as MapPopup } from 'react-leafle
 import MarkerClusterGroup from "react-leaflet-cluster";
 import TextPath from 'react-leaflet-textpath';
 import { FullscreenControl } from "react-leaflet-fullscreen";
-import { NodeTables, ExtendedAirportTables, IPAvailability } from "../components/NodeTables";
+import { NodeTables, ExtendedAirportTables, IPAvailability, PeerPolicy } from "../components/NodeTables";
 import { Badge } from '@radix-ui/themes';
 
 import { Icon } from "leaflet";
@@ -241,8 +241,9 @@ export default function NodeMap({
                             <strong>{node.displayName}</strong> - <strong>{node.rc}</strong> <span style={{ fontSize: 10 }}>({node.sc})</span><br />
                             <br />
                             Endpoint: <code>{node.endpoint}</code><br />
-                            IPv4: <Badge size="2" variant="solid" color={node.ipv4 === IPAvailability.Yes ? "green" : node.ipv4 === IPAvailability.No ? "red" : "yellow"}>{node.ipv4}</Badge>&nbsp;/&nbsp;
-                            IPv6: <Badge size="2" variant="solid" color={node.ipv6 === IPAvailability.Yes ? "green" : node.ipv6 === IPAvailability.No ? "red" : "yellow"}>{node.ipv6}</Badge><br />
+                            IPv4: <Badge variant="solid" color={node.ipv4 === IPAvailability.Yes ? "green" : node.ipv4 === IPAvailability.No ? "red" : "yellow"}>{node.ipv4}</Badge>&nbsp;/&nbsp;
+                            IPv6: <Badge variant="solid" color={node.ipv6 === IPAvailability.Yes ? "green" : node.ipv6 === IPAvailability.No ? "red" : "yellow"}>{node.ipv6}</Badge><br />
+                            Policy: <Badge variant="solid" color={node.policy === PeerPolicy.Open ? "green" : node.policy === PeerPolicy.Closed ? "red" : node.policy === PeerPolicy.Ask ? "yellow" : "gray"}>{node.policy}</Badge><br />
                             <br />
                             DN42 IPv4: <code>{node.dn42IPv4}</code><br />
                             DN42 IPv6: <code>{node.dn42IPv6}</code><br />

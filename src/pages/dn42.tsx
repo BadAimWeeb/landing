@@ -7,7 +7,7 @@ import { PiDiscordLogoDuotone, PiEnvelopeDuotone, PiGithubLogoDuotone, PiInfoDuo
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { NodeTables } from "../components/NodeTables";
+import { NodeTables, PeerPolicy } from "../components/NodeTables";
 
 import { ContinentColors, CountryToContinent } from "../components/geoinfo";
 import NodeMap from "../components/NodeMap";
@@ -420,6 +420,7 @@ export default function PageDN42() {
                                             <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>IPv6</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>Endpoint</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>DN42 IP</Table.ColumnHeaderCell>
+                                            <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>Policy</Table.ColumnHeaderCell>
                                             <Table.ColumnHeaderCell style={{ position: "sticky", top: 0, backgroundColor: "var(--color-panel-solid)", zIndex: 1 }}>Notes</Table.ColumnHeaderCell>
                                         </Table.Row>
                                     </Table.Header>
@@ -439,6 +440,14 @@ export default function PageDN42() {
                                                     <Table.Cell>{node.ipv6}</Table.Cell>
                                                     <Table.Cell><code>{node.endpoint}</code></Table.Cell>
                                                     <Table.Cell><code>{node.dn42IPv4}</code><br /><code>{node.dn42IPv6}</code></Table.Cell>
+                                                    <Table.Cell>
+                                                        {
+                                                            node.policy === PeerPolicy.Open ? <Badge color="green">Open</Badge> :
+                                                                node.policy === PeerPolicy.Closed ? <Badge color="red">Closed</Badge> :
+                                                                    node.policy === PeerPolicy.Ask ? <Badge color="yellow">Ask</Badge> :
+                                                                        <Badge color="gray">{node.policy}</Badge>
+                                                        }
+                                                    </Table.Cell>
                                                     <Table.Cell style={{
                                                         whiteSpace: "pre-wrap"
                                                     }}>{node.notes}</Table.Cell>

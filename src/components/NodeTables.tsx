@@ -9,6 +9,12 @@ export enum IPAvailability {
     Yes = "Yes"
 }
 
+export enum PeerPolicy {
+    Open = "Open",
+    Ask = "Ask",
+    Closed = "Closed"
+}
+
 export const ExtendedAirportTables = {
     "msp": [44.881944, -93.221667]
 };
@@ -23,6 +29,7 @@ export const BaseNodeTables: {
     dn42IPv6: string;
     ipv4: IPAvailability;
     ipv6: IPAvailability;
+    policy: PeerPolicy;
     notes: string | null;
 }[] = [
         {
@@ -35,6 +42,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:c00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Residental network."
         },
         {
@@ -47,6 +55,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:d00::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Ask,
             notes: "Residental network.\nUpstream is A00."
         },
         {
@@ -59,6 +68,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1200::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Residental network.\nUpstream is A00."
         },
         {
@@ -71,6 +81,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1300::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Residental network.\nUpstream is A00."
         },
         {
@@ -83,6 +94,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:200::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -95,6 +107,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:400::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Tunnel,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -107,7 +120,8 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:800::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
-            notes: "This node has slightly weak resources."
+            policy: PeerPolicy.Ask,
+            notes: "This node has weak resources."
         },
         {
             sc: "C06",
@@ -119,6 +133,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:600::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -131,6 +146,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:300::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Singapore nodes can peer with this node."
         },
         {
@@ -143,6 +159,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:500::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -155,6 +172,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:700::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -167,6 +185,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:e00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -179,6 +198,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1a00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -191,18 +211,20 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1b00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Unmetered connection @ 300Mbps"
         },
         {
             sc: "C13",
             rc: "hk-hkg1",
             lat: 22.308889,
-            lon: 113.914444,
+            lon: 113.914722,
             endpoint: "hk-hkg1.rc.badaimweeb.me",
             dn42IPv4: "172.22.142.182",
             dn42IPv6: "fd99:727:bad0:1c00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -215,7 +237,8 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1d00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
-            notes: null
+            policy: PeerPolicy.Ask,
+            notes: "This node has weak resources."
         },
         {
             sc: "C15",
@@ -227,7 +250,8 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1e00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
-            notes: null
+            policy: PeerPolicy.Ask,
+            notes: "Low bandwidth @ 400G/month."
         },
         {
             sc: "C16",
@@ -239,6 +263,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2000::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -251,6 +276,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2100::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -263,6 +289,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2200::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Unmetered connection @ 1Gbps"
         },
         {
@@ -275,6 +302,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2300::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
             notes: "Unmetered connection @ 10Gbps"
         },
         {
@@ -287,6 +315,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2400::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Unmetered connection @ 10Gbps"
         },
         {
@@ -299,6 +328,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2500::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Unmetered connection @ 300Mbps"
         },
         {
@@ -311,6 +341,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2600::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -323,6 +354,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2700::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Unmetered connection @ 1Gbps"
         },
         {
@@ -335,6 +367,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2800::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -347,6 +380,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2900::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Unmetered connection @ 300Mbps"
         },
         {
@@ -359,6 +393,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2a00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -371,6 +406,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3000::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -378,12 +414,13 @@ export const BaseNodeTables: {
             rc: "us-sea1",
             lat: 47.448889,
             lon: -122.309444,
-            endpoint: "us-sea1.rc.badaimweeb.me",
+            endpoint: "<contact>.rc.badaimweeb.me",
             dn42IPv4: "172.22.142.133",
             dn42IPv6: "fd99:727:bad0:3100::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
-            notes: "CMIN2"
+            policy: PeerPolicy.Closed,
+            notes: "CMIN2. Use us-sea2 instead for peering."
         },
         {
             sc: "C29",
@@ -395,6 +432,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3300::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -407,6 +445,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3400::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -419,6 +458,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3500::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -431,6 +471,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3600::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -443,6 +484,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3700::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -455,6 +497,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3800::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -467,6 +510,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3900::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -479,6 +523,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3a00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -491,6 +536,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3b00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -503,6 +549,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3c00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -515,6 +562,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3d00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -527,6 +575,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3e00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -539,6 +588,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3f00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -551,6 +601,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4100::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -563,6 +614,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4200::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -575,6 +627,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4300::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -587,6 +640,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4800::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Tunnel,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -599,6 +653,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4900::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -611,6 +666,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4a00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Tunnel,
+            policy: PeerPolicy.Ask,
             notes: "CN2-GIA. Does not have native IPv6, but still carried by hosting provider via SIT tunnel @ ~1ms diff. Selective peering."
         },
         {
@@ -623,6 +679,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4b00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -635,6 +692,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4c00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -647,6 +705,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4d00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -659,6 +718,33 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:5000::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
+            notes: null
+        },
+        {
+            sc: "C54",
+            rc: "us-sea2",
+            lat: 47.464722,
+            lon: 8.549167,
+            endpoint: "us-sea2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.5",
+            dn42IPv6: "fd99:727:bad0:5200::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
+            notes: null
+        },
+        {
+            sc: "C55",
+            rc: "au-per1",
+            lat: -31.94, 
+            lon: 115.965,
+            endpoint: "au-per1.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.7",
+            dn42IPv6: "fd99:727:bad0:5400::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: null
         },
         {
@@ -671,6 +757,20 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:f00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
+            notes: "Non-permanent node."
+        },
+        {
+            sc: "D02",
+            rc: "sg-sin2",
+            lat: 1.359167,
+            lon: 103.989444,
+            endpoint: "sg-sin2.rc.badaimweeb.me",
+            dn42IPv4: "172.22.142.165",
+            dn42IPv6: "fd99:727:bad0:1000::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -683,6 +783,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1100::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -695,6 +796,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1700::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -707,6 +809,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1900::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -719,6 +822,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2c00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -731,6 +835,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2d00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -743,6 +848,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2e00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -755,6 +861,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:2f00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -767,6 +874,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4600::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -779,6 +887,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4700::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Non-permanent node."
         },
         {
@@ -791,7 +900,34 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:100::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.No,
+            policy: PeerPolicy.Ask,
             notes: null
+        },
+        {
+            sc: "F01",
+            rc: "hk-hkg3",
+            lat: 22.308889,
+            lon: 113.914722,
+            endpoint: "<contact>.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.6",
+            dn42IPv6: "fd99:727:bad0:5300::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Closed,
+            notes: "CTGNet. Use hk-hkg1 and hk-hkg2 instead."
+        },
+        {
+            sc: "F02",
+            rc: "hk-hkg4",
+            lat: 22.308889,
+            lon: 113.914722,
+            endpoint: "<contact>.rc.badaimweeb.me",
+            dn42IPv4: "172.22.123.8",
+            dn42IPv6: "fd99:727:bad0:5500::1",
+            ipv4: IPAvailability.Yes,
+            ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Closed,
+            notes: "Use hk-hkg1 and hk-hkg2 instead."
         },
         {
             sc: "G00",
@@ -803,6 +939,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1400::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Ask,
             notes: "Residental network.\nShould not be used as transit to other AS (low speed & unstable latency)."
         },
         {
@@ -815,6 +952,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:4000::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Tunnel,
+            policy: PeerPolicy.Open,
             notes: "Residental network."
         },
         {
@@ -827,7 +965,8 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:a00::1",
             ipv4: IPAvailability.Yes,
             ipv6: IPAvailability.Yes,
-            notes: "Residental network.\Should not be used as transit to other AS (low speed)."
+            policy: PeerPolicy.Ask,
+            notes: "Residental network.\nShould not be used as transit to other AS (low speed)."
         },
         {
             sc: "H01",
@@ -839,6 +978,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:1f00::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Residental network.\nOperated by MICHIOXD-MNT, you can also peer with him :)"
         },
         {
@@ -851,6 +991,7 @@ export const BaseNodeTables: {
             dn42IPv6: "fd99:727:bad0:3200::1",
             ipv4: IPAvailability.NAT,
             ipv6: IPAvailability.Yes,
+            policy: PeerPolicy.Open,
             notes: "Residental network.\nOperated by MICHIOXD-MNT, you can also peer with him :)"
         }
     ];
@@ -897,6 +1038,7 @@ export const NodeTables: {
     dn42IPv6: string;
     ipv4: IPAvailability;
     ipv6: IPAvailability;
+    policy: PeerPolicy;
     notes: string | null;
 }[] = BaseNodeTables.map(node => {
     let tsplit = SPLIT_FORMAT.exec(node.rc.toLocaleLowerCase());

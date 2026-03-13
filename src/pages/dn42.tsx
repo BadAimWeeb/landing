@@ -11,6 +11,7 @@ import { NodeTables, PeerPolicy } from "../components/NodeTables";
 
 import { ContinentColors, CountryToContinent } from "../components/geoinfo";
 import NodeMap from "../components/NodeMap";
+import Centrality from "../components/Centrality";
 
 const ListSocial = [
     {
@@ -281,6 +282,9 @@ export default function PageDN42() {
         </Table.Root>;
     }, [topology]);
 
+    const [centralityShowDownstream, setCentralityShowDownstream] = useState(false);
+    const [centralityShowUpstream, setCentralityShowUpstream] = useState(false);
+
     return (
         <div className={cls.HomePage}>
             <Element name="home" className={cls.Main}>
@@ -470,6 +474,43 @@ export default function PageDN42() {
 
                                 <div style={{ padding: "0 var(--space-4) 0 var(--space-4)", position: "relative" }}>
                                     {cacheLatencyTable}
+                                </div>
+                            </Dialog.Content>
+                        </Dialog.Root>
+                        <br />
+                        <br />
+                        <Dialog.Root>
+                            <Dialog.Trigger>
+                                <Link href="#bruh3" style={{ fontSize: 10 }}>view internal peering (for internal optimization purposes <sup>ofc</sup>)</Link>
+                            </Dialog.Trigger>
+                            <Dialog.Content maxWidth="90vw" style={{ padding: 0 }}>
+                                <div style={{ padding: "var(--space-5)", paddingBottom: 0 }}>
+                                    <Dialog.Title>Internal Peering</Dialog.Title>
+                                    <div style={{ marginBottom: 16 }}>
+                                        <Text as="label" size="2">
+                                            <Flex gap="2">
+                                                <Switch size="3" checked={centralityShowDownstream} onCheckedChange={setCentralityShowDownstream} />
+                                                Show downstream (receive) side
+                                            </Flex>
+                                        </Text>
+                                    </div>
+                                    <div style={{ marginBottom: 16 }}>
+                                        <Text as="label" size="2">
+                                            <Flex gap="2">
+                                                <Switch size="3" checked={centralityShowUpstream} onCheckedChange={setCentralityShowUpstream} />
+                                                Show upstream (forward) side
+                                            </Flex>
+                                        </Text>
+                                    </div>
+                                </div>
+
+                                <div style={{ padding: "0 var(--space-4) 0 var(--space-4)", position: "relative" }}>
+                                    <Centrality
+                                        formattedTopology={formattedTopology || {}}
+                                        dynamicRgCode={dynamicRgCode}
+                                        showDownstream={centralityShowDownstream}
+                                        showUpstream={centralityShowUpstream}
+                                    />
                                 </div>
                             </Dialog.Content>
                         </Dialog.Root>

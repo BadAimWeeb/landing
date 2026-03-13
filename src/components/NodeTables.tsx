@@ -1043,7 +1043,7 @@ export const NodeTables: {
 }[] = BaseNodeTables.map(node => {
     let tsplit = SPLIT_FORMAT.exec(node.rc.toLocaleLowerCase());
     let flag = tsplit ? (EMOJI_FLAG_TABLE[tsplit[1].toUpperCase().charAt(0)] + EMOJI_FLAG_TABLE[tsplit[1].toUpperCase().charAt(1)]) : "🏳️";
-    let name = (AirportToPlaceName[tsplit ? tsplit[2] : ""] ?? `${flag} Region ${tsplit ? tsplit[2] : ""}`) + " " + (parseInt(tsplit ? tsplit[3] : "1") - 1 ? tsplit![3] : "");
+    let name = (AirportToPlaceName[tsplit ? tsplit[2] : ""] ?? `${flag} Region ${tsplit ? tsplit[2] : ""}`) + (parseInt(tsplit ? tsplit[3] : "1") - 1 ? (" " + tsplit![3]) : "");
 
     return {
         ...node,
@@ -1052,3 +1052,5 @@ export const NodeTables: {
         displayName: name
     }
 });
+
+export const SCtoRCLookup = Object.fromEntries(NodeTables.map(node => [node.sc, [node.rc, node.displayName]]));
